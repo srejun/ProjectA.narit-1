@@ -10,7 +10,7 @@ app.use(bodyParser.json())
 var MongoClient = require('mongodb').MongoClient
 var url = "mongodb://localhost:27017/"
 
-app.post('/show', function(req,res){
+app.post('/api/getdbytime', function(req,res){ //api get data by parse value time
     console.log(req.body)
     if(req.body['date']===undefined||req.body['ftime']===undefined||req.body['ttime']===undefined){
         res.end("ERROR")
@@ -19,7 +19,7 @@ app.post('/show', function(req,res){
     MongoClient.connect(url, function(err, db) {
         if (err) throw err;
         var dbo = db.db("DataSensor");
-        dbo.collection("from").find({date: req.body['date'],ftime: req.body['ftime'],ttime: req.body['ttime']},).toArray(function(err, result) {
+        dbo.collection("from").find({date: req.body['date'],ftime: req.body['ftime'],ttime: req.body['ttime']}).toArray(function(err, result) {
           if (err) throw err;
           console.log(result);
           console.log("GET")
@@ -29,8 +29,10 @@ app.post('/show', function(req,res){
     });
 })
 
-app.post('/register',function(req,res){
-    console.log(req.body)
+
+
+app.post('/api',function(req,res){ //
+    console.log('data input'+req.body)
     if(req.body['date']===undefined||req.body['ftime']===undefined||req.body['ttime']===undefined){
         res.end("ERROR")
         throw("ERROR")
@@ -51,6 +53,60 @@ app.post('/register',function(req,res){
     });
     res.end("OKKKKK")
 })
+
+
+
+app.post('/api/inputdata', function(req,res){ //sensor input update data
+    //console.log(req.body)
+    var hasplace = false
+    var data=null
+    if(req.body['location']===undefined||req.body['inBuilding']===undefined||req.body['data']===undefined){
+        res.end("ERROR")
+        throw("ERROR")
+    }
+    MongoClient.connect(url, function(err, db) {
+        if (err) throw err;
+        var dbo = db.db("DataSensor");
+        var myobj = req.body
+        
+        
+        //var dbo = db.db("DataSensor");
+            dbo.collection("from").find({location: req.body['location'],inBuilding: req.body['inBuilding']}).toArray(function(err, result) {
+                if (err) throw err;
+                hasplace = true
+                data=result['data']
+                console.log("result from db"+result);
+                console.log("11111"+hasplace) 
+                db.close();
+            });   
+        
+            if(hasplace){
+                dbo.collection("from").updateMany(data, req.body['data'], function(err, res) {
+                    if (err) throw err;
+                    console.log("1 document update");
+                    db.close();
+                });
+            }
+            else{
+                dbo.collection("from").insertOne(myobj, function(err, res) {
+                    if (err) throw err;
+                    console.log("1 document insert");
+                    db.close();
+                });
+            }
+            
+        
+        
+        
+        
+        
+        console.log(data)
+        console.log("2222222"+hasplace) 
+    });
+    res.end("OKKKKK")
+})
+
+
 
 var server = app.listen(8081, function(){
     var host = server.address().address
