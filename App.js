@@ -139,7 +139,7 @@ app.post('/api/inputdata', function(req,res){ //sensor input update data
                 })
                 }
                 
-                console.log("result from db"+JSON.stringify(result));
+                //console.log("result from db"+JSON.stringify(result));
                 //console.log("11111"+hasplace) 
                 db.close();
                 
