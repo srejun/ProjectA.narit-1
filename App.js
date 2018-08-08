@@ -32,6 +32,22 @@ app.post('/api/getdbytime', function(req,res){ //api get data by parse value tim
 })
 
 
+app.get('/api',function(req,res){
+    var date = new Date()
+    var day = date.getUTCFullYear()
+    var time = date.getTime()
+    var hour = date.getHours()
+    var minute = date.getMinutes()
+    var second = date.getSeconds()
+    var alltime = "hour"+"minute"+"second"
+    console.log(date)
+    console.log(date.toLocaleTimeString())
+    console.log(""+hour+minute+second)
+    
+    res.end("test time")
+})
+
+
 
 app.post('/api',function(req,res){ //
     console.log('data input'+req.body)
@@ -61,7 +77,7 @@ app.post('/api',function(req,res){ //
 app.post('/api/inputdata', function(req,res){ //sensor input update data
     //console.log(req.body)
     var hasplace = false
-    var data=null
+    
     if(req.body['location']===undefined||req.body['inBuilding']===undefined||req.body['data']===undefined){
         res.end("ERROR")
         throw("ERROR")
@@ -71,8 +87,18 @@ app.post('/api/inputdata', function(req,res){ //sensor input update data
         var dbo = db.db("DataSensor");
         var myobj = req.body
         
-        
+        var date = new Date()
+        var time = date.getTime()
+        myobj['data'].time = date
+        var hour = date.getHours()
+        var minute = date.getMinutes()
+        var second = date.getSeconds()
+        var alltime = "hour"+"minute"+"second"
+        //console.log("this time "+time)
+        //console.log("this count"+hour+minute+second)
+        //console.log("all time "+alltime)
         //var dbo = db.db("DataSensor");
+        //console.log(myobj)
         
             dbo.collection("from").find({location: req.body['location'],inBuilding: req.body['inBuilding']}).toArray(function(err, result) {
                 if (err) throw err;
@@ -80,14 +106,18 @@ app.post('/api/inputdata', function(req,res){ //sensor input update data
                 {
                     MongoClient.connect(url, function(err, db) {
                     if (err) throw err;
+                    let  newdata ={}
+                    newdata['location'] = req.body['location']
+                    newdata['inBuilding'] = req.body['inBuilding']
+                    newdata['data'] = [{'uv':req.body['data']['uv'],'wind':req.body['data']['wind'],'humidity':req.body['data']['humidity'],'temperature':req.body['data']['temperature'],'time':date}]
                     var dbo = db.db("DataSensor");
-                    var adddata = {$push:{data:req.body.data}}
-                    console.log(result)
-                    console.log(req.body['data'])
-                   
-                    dbo.collection("from").update({location: req.body['location'],inBuilding: req.body['inBuilding']}, adddata, function(err, res) {
+                    var adddata = {$push:{data:newdata.data[0]}}
+                    //console.log(result)
+                    //console.log(req.body['data'])
+                    
+                    dbo.collection("from").update({location: req.body['location'],inBuilding: req.body['inBuilding']},adddata, function(err, res) {
                         if (err) throw err;
-                        console.log(JSON.stringify(result[0]['data'][0])+"path "+res);
+                        //console.log(JSON.stringify(result[0]['data'][0])+"path "+res);
                         db.close();
                     });
                     })
@@ -96,7 +126,12 @@ app.post('/api/inputdata', function(req,res){ //sensor input update data
                 MongoClient.connect(url, function(err, db) {
                     if (err) throw err;
                     var dbo = db.db("DataSensor");
-                    dbo.collection("from").insertOne(myobj, function(err, res) {
+                    let  newdata ={}
+                    newdata['location'] = req.body['location']
+                    newdata['inBuilding'] = req.body['inBuilding']
+                    newdata['data'] = [{'uv':req.body['data']['uv'],'wind':req.body['data']['wind'],'humidity':req.body['data']['humidity'],'temperature':req.body['data']['temperature'],'time':date}]
+                    //var adddata = {$set}
+                    dbo.collection("from").insertOne(newdata, function(err, res) {
                         if (err) throw err;
                         console.log("1 document insert");
                         db.close();
@@ -105,7 +140,7 @@ app.post('/api/inputdata', function(req,res){ //sensor input update data
                 }
                 
                 console.log("result from db"+JSON.stringify(result));
-                console.log("11111"+hasplace) 
+                //console.log("11111"+hasplace) 
                 db.close();
                 
             });
