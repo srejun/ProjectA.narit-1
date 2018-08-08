@@ -1,3 +1,5 @@
+
+
 var express = require('express')
 var bodyParser = require('body-parser')
 var app = express()
@@ -71,29 +73,51 @@ app.post('/api/inputdata', function(req,res){ //sensor input update data
         
         
         //var dbo = db.db("DataSensor");
+        
             dbo.collection("from").find({location: req.body['location'],inBuilding: req.body['inBuilding']}).toArray(function(err, result) {
                 if (err) throw err;
-                hasplace = true
-                data=result['data']
-                console.log("result from db"+result);
+                if(result.length>0)
+                {
+                    MongoClient.connect(url, function(err, db) {
+                    if (err) throw err;
+                    var dbo = db.db("DataSensor");
+                    var adddata = {$push:{data:req.body.data}}
+                    console.log(result)
+                    console.log(req.body['data'])
+                   
+                    dbo.collection("from").update({location: req.body['location'],inBuilding: req.body['inBuilding']}, adddata, function(err, res) {
+                        if (err) throw err;
+                        console.log(JSON.stringify(result[0]['data'][0])+"path "+res);
+                        db.close();
+                    });
+                    })
+                }
+                else{
+                MongoClient.connect(url, function(err, db) {
+                    if (err) throw err;
+                    var dbo = db.db("DataSensor");
+                    dbo.collection("from").insertOne(myobj, function(err, res) {
+                        if (err) throw err;
+                        console.log("1 document insert");
+                        db.close();
+                    });
+                })
+                }
+                
+                console.log("result from db"+JSON.stringify(result));
                 console.log("11111"+hasplace) 
                 db.close();
-            });   
+                
+            });
+        })
+            
         
-            if(hasplace){
-                dbo.collection("from").updateMany(data, req.body['data'], function(err, res) {
-                    if (err) throw err;
-                    console.log("1 document update");
-                    db.close();
-                });
+            /* if(hasplace){
+                
             }
-            else{
-                dbo.collection("from").insertOne(myobj, function(err, res) {
-                    if (err) throw err;
-                    console.log("1 document insert");
-                    db.close();
-                });
-            }
+               
+            console.log("this data"+data)
+            
             
         
         
@@ -101,8 +125,8 @@ app.post('/api/inputdata', function(req,res){ //sensor input update data
         
         
         console.log(data)
-        console.log("2222222"+hasplace) 
-    });
+        console.log("2222222"+hasplace)  */
+    //});
     res.end("OKKKKK")
 })
 
