@@ -1,3 +1,5 @@
+
+
 var express = require('express')
 var bodyParser = require('body-parser')
 var app = express()
@@ -10,7 +12,7 @@ app.use(bodyParser.json())
 var MongoClient = require('mongodb').MongoClient
 var url = "mongodb://localhost:27017/"
 
-app.post('/show', function(req,res){
+app.post('/api/getdbytime', function(req,res){ //api get data by parse value time
     console.log(req.body)
     if(req.body['date']===undefined||req.body['ftime']===undefined||req.body['ttime']===undefined){
         res.end("ERROR")
@@ -19,7 +21,7 @@ app.post('/show', function(req,res){
     MongoClient.connect(url, function(err, db) {
         if (err) throw err;
         var dbo = db.db("DataSensor");
-        dbo.collection("from").find({date: req.body['date'],ftime: req.body['ftime'],ttime: req.body['ttime']},).toArray(function(err, result) {
+        dbo.collection("from").find({date: req.body['date'],ftime: req.body['ftime'],ttime: req.body['ttime']}).toArray(function(err, result) {
           if (err) throw err;
           console.log(result);
           console.log("GET")
@@ -29,8 +31,62 @@ app.post('/show', function(req,res){
     });
 })
 
-app.post('/register',function(req,res){
-    console.log(req.body)
+
+app.get('/api',function(req,res){
+    var date = new Date()
+    var day = date.getUTCFullYear()
+    var time = date.getTime()
+    var hour = date.getHours()
+    var minute = date.getMinutes()
+    var second = date.getSeconds()
+    var alltime = "hour"+"minute"+"second"
+    console.log(date)
+    console.log(date.toLocaleTimeString())
+    console.log(""+hour+minute+second)
+    
+    res.end("test time")
+})
+
+
+app.post('/api/getallsensor',function(req,res){
+    var date = new Date()
+    var mysort = { location: 1 };
+    
+    MongoClient.connect(url, function(err, db) {
+        if (err) throw err;
+        var dbo = db.db("DataSensor");
+        dbo.collection("from").find({}).sort(mysort).toArray(function(err, result) {
+          if (err) throw err;
+          console.log(result);
+          console.log(result.length)
+          console.log(result[0].data.length)
+          console.log(result[1].data.length)
+          let max ={}
+          //console.log(JSON.stringify(result[0].data[0]))
+          for(var i=0;i<result.length;i++){
+              max[i]={'location':result[i].location,'inBuilding':result[i].inBuilding,'data':result[i].data[0]}
+              /* if(result[i].data[0].time.getTime()>max[i].data.time.getTime()){
+                console.log(max[i].data.time.getTime())
+                console.log(result[i].data[0].time.getTime())
+              } */
+              
+            for(var j=0;j<result[i].data.length;j++){
+                if(result[i].data[j].time.getTime()>max[i].data.time.getTime()){
+                    max[i].data=result[i].data[j]
+                }
+            }
+          }
+          console.log(max)
+          res.end(JSON.stringify(max))
+          db.close();
+        });
+    });
+    
+})
+
+
+app.post('/api',function(req,res){ //
+    console.log('data input'+req.body)
     if(req.body['date']===undefined||req.body['ftime']===undefined||req.body['ttime']===undefined){
         res.end("ERROR")
         throw("ERROR")
@@ -51,6 +107,101 @@ app.post('/register',function(req,res){
     });
     res.end("OKKKKK")
 })
+
+
+
+app.post('/api/inputdata', function(req,res){ //sensor input update data
+    //console.log(req.body)
+    var hasplace = false
+    
+    if(req.body['location']===undefined||req.body['inBuilding']===undefined||req.body['data']===undefined){
+        res.end("ERROR")
+        throw("ERROR")
+    }
+    MongoClient.connect(url, function(err, db) {
+        if (err) throw err;
+        var dbo = db.db("DataSensor");
+        var myobj = req.body
+        
+        var date = new Date()
+        var time = date.getTime()
+        myobj['data'].time = date
+        var hour = date.getHours()
+        var minute = date.getMinutes()
+        var second = date.getSeconds()
+        var alltime = "hour"+"minute"+"second"
+        //console.log("this time "+time)
+        //console.log("this count"+hour+minute+second)
+        //console.log("all time "+alltime)
+        //var dbo = db.db("DataSensor");
+        //console.log(myobj)
+        
+            dbo.collection("from").find({location: req.body['location'],inBuilding: req.body['inBuilding']}).toArray(function(err, result) {
+                if (err) throw err;
+                if(result.length>0)
+                {
+                    MongoClient.connect(url, function(err, db) {
+                    if (err) throw err;
+                    let  newdata ={}
+                    newdata['location'] = req.body['location']
+                    newdata['inBuilding'] = req.body['inBuilding']
+                    newdata['data'] = [{'uv':req.body['data']['uv'],'wind':req.body['data']['wind'],'humidity':req.body['data']['humidity'],'temperature':req.body['data']['temperature'],'time':date}]
+                    var dbo = db.db("DataSensor");
+                    var adddata = {$push:{data:newdata.data[0]}}
+                    //console.log(result)
+                    //console.log(req.body['data'])
+                    
+                    dbo.collection("from").update({location: req.body['location'],inBuilding: req.body['inBuilding']},adddata, function(err, res) {
+                        if (err) throw err;
+                        //console.log(JSON.stringify(result[0]['data'][0])+"path "+res);
+                        db.close();
+                    });
+                    })
+                }
+                else{
+                MongoClient.connect(url, function(err, db) {
+                    if (err) throw err;
+                    var dbo = db.db("DataSensor");
+                    let  newdata ={}
+                    newdata['location'] = req.body['location']
+                    newdata['inBuilding'] = req.body['inBuilding']
+                    newdata['data'] = [{'uv':req.body['data']['uv'],'wind':req.body['data']['wind'],'humidity':req.body['data']['humidity'],'temperature':req.body['data']['temperature'],'time':date}]
+                    //var adddata = {$set}
+                    dbo.collection("from").insertOne(newdata, function(err, res) {
+                        if (err) throw err;
+                        console.log("1 document insert");
+                        db.close();
+                    });
+                })
+                }
+                
+                console.log("result from db"+JSON.stringify(result));
+                //console.log("11111"+hasplace) 
+                db.close();
+                
+            });
+        })
+            
+        
+            /* if(hasplace){
+                
+            }
+               
+            console.log("this data"+data)
+            
+            
+        
+        
+        
+        
+        
+        console.log(data)
+        console.log("2222222"+hasplace)  */
+    //});
+    res.end("OKKKKK")
+})
+
+
 
 var server = app.listen(8081, function(){
     var host = server.address().address

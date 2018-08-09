@@ -1,0 +1,6 @@
+{"_id":{"$oid":"5b671402782ae14f14a3acbb"},"date":"2016-12-27","ftime":"12.00.00","ttime":"12.00.05"}
+{"_id":{"$oid":"5b671446782ae14f14a3acbc"},"date":"2016-12-28","ftime":"13.00.00","ttime":"13.00.05"}
+{"_id":{"$oid":"5b6714a0c7291547ec89ab8a"},"date":"2016-12-29","ftime":"14.00.00","ttime":"14.00.05"}
+{"_id":{"$oid":"5b6715f026ce8554ac74bbcc"},"date":"2016-12-30","ftime":"15.00.00","ttime":"15.00.05"}
+{"_id":{"$oid":"5b671f6901436853681f46d9"},"date":"2016-12-31","ftime":"16.00.00","ttime":"16.00.05","":""}
+{"_id":{"$oid":"5b6acefb0f96524904ec0494"},"location":"AA","inBuilding":false,"data":[{"uv":{"$numberInt":"100"},"wind":{"$numberInt":"99"},"humidity":{"$numberInt":"50"},"temperature":{"$numberInt":"50"},"time":{"$date":{"$numberLong":"1533726458989"}}},{"uv":{"$numberInt":"100"},"wind":{"$numberInt":"99"},"humidity":{"$numberInt":"50"},"temperature":{"$numberInt":"50"},"time":{"$date":{"$numberLong":"1533726464458"}}},{"uv":{"$numberInt":"100"},"wind":{"$numberInt":"99"},"humidity":{"$numberInt":"50"},"temperature":{"$numberInt":"50"},"time":{"$date":{"$numberLong":"1533726567929"}}},{"uv":{"$numberInt":"100"},"wind":{"$numberInt":"99"},"humidity":{"$numberInt":"50"},"temperature":{"$numberInt":"50"},"time":{"$date":{"$numberLong":"1533726581109"}}}]}
