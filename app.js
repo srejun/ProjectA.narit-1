@@ -57,6 +57,21 @@ app.post('/showuser', function (req, res) {
 
 });
 
+///logout 
+app.post('/logout', function (req, res) {
+  MongoClient.connect(url, function (err, db) {
+    if (err) throw err;
+    var dbo = db.db("weather");
+    dbo.collection("Session").deleteOne({seesion_id:req.sessionID,detail:req.session},function (err, result) {
+      if (result>0) {console.log('have user logout'),res.end('log out')}
+      else { res.end('no session math'),console.log('no session math'+req.sessionID+req.session) }
+      db.close();
+    })
+
+  })
+
+});
+
 
 
 ///login
@@ -82,8 +97,28 @@ app.post('/login', function (req, res) {
           else {
             console.log(typeof(req.body.PASS))
              bcrypt.compare(req.body.PASS,result[0].PASS, function(err, respone) {
-              if(respone)    {console.log('welcom user')
-              res.end('welcome')}
+              if(respone)    {
+                MongoClient.connect(url, function (err, db) {
+                  if (err) throw err;
+                  var dbo = db.db("weather");
+                  dbo.collection("Sessions").find({seesion_id:req.sessionID,detail:req.session},function (err, result) {
+                    if (result>0) {console.log('have user login')}
+                    else {  MongoClient.connect(url, function (err, db) {
+                if (err) throw err;
+                var dbo = db.db("weather");
+                dbo.collection("Sessions").insertOne({seesion_id:req.sessionID,detail:req.session},function (err, result) {
+                  if (err) throw err;
+                  res.end('welcome')
+                  console.log('welcom user'+req.session+"id"+req.sessionID)
+                })
+              
+              })}
+                    
+                  })
+                
+                })
+            
+              }
             else {console.log('not same pass user'+req.body.PASS)
               res.end(JSON.stringify(result)+'req not same'+JSON.stringify(req.body))}
 
@@ -251,7 +286,7 @@ app.post('/edituser', function (req, res) {
         }
         dbo.collection("user").updateOne({name:myobj.name,email:myobj.email,status:true}, newvalues, function (err, result) {
           if (err) throw err;
-          res.end(JSON.stringify(myobj))
+          res.end(JSON.stringify(myobj))  
   
         });
             db.close();
