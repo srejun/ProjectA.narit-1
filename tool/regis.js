@@ -7,13 +7,15 @@ exports.go=function (req, res) {
     const col_ses="Sessions"
     const col_user="user"
     const DB="weather"
+    var Bres ={same:true}
+
     var myobj={name:req.body.name,email:req.body.email,isAdmin:req.body.isAdmin,status:true}
   MongoClient.connect(url, function (err, db) {
     if (err) throw err;
     var dbo = db.db(DB);
     ///////////////////////check Session All////////////
-    dbo.collection(col_ses).find({session_id:req.sessionID,isAdmin:myobj.isAdmin}).toArray(function (err, result) {
-        if(result.length>0) {console.log('U R login now'),res.end('U R login now')    }
+    dbo.collection(col_ses).find({session_id:req.sessionID}).toArray(function (err, result) {
+        if(result.length>0) {console.log('U R login now'),res.end(JSON.stringify(Bres))    }
         else{
             /////////////////check form input///////////////////
                 req.checkBody('name', 'name Must have not Empty').isEmpty
@@ -25,6 +27,7 @@ exports.go=function (req, res) {
                 const errorValidate = req.validationErrors();
                 if (errorValidate) {console.log(JSON.stringify(errorValidate))} 
                 else {
+                    Bres.same=false
                         //////////////check have user///////////////////////
                         MongoClient.connect(url, function (err, db) {
                             if (err) throw err;
@@ -41,8 +44,8 @@ exports.go=function (req, res) {
                                         myobj.PASS = hash
                                         dbo.collection(col_user).insertOne(myobj, function (err, result) {
                                             if (err) throw err
-                                            res.end(JSON.stringify(myobj))                            
                                         })      
+                                        res.end(JSON.stringify(Bres))
                                     db.close()
                                     })                                
                                 }                       

@@ -4,6 +4,11 @@ exports.go=function (req, res) {
   const col_ses="Sessions"
   const col_user="user"
   const DB="weather"
+  req.session.destroy(function(err) {
+    if(err) {
+      console.log(err);
+    } 
+  })
     MongoClient.connect(url, function (err, db) {
       if (err) throw err;
       var dbo = db.db(DB);
