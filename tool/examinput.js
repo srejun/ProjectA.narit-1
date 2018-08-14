@@ -32,13 +32,13 @@ exports.go = function (req, res) {
         newdata['date'] = alltime.getTime()
         var adddata
         var find = "nodata"
-        dbo.collection("from").find({ location: req.body['location'], inBuilding: req.body['inBuilding'], date: newdata['date'] }).toArray(function (err, result) {
+        dbo.collection("from").find({ location: req.body['location'], inBuilding: req.body['inBuilding'] }).toArray(function (err, result) {
             if (err) throw err;
             find = result.length
-            console.log(result.length)
-            console.log("res" + result[0].data.length)
+            console.log("start GenData")
+         
             timenow = result[0].data[result[0].data.length - 1].time
-            console.log("time" + timenow)
+          
 
             if (result.length > 0) {
                 MongoClient.connect(url, function (err, db) {
@@ -52,7 +52,7 @@ exports.go = function (req, res) {
                         req.body['data']['humidity']=req.body['data']['humidity']+1
                         req.body['data']['temperature']=req.body['data']['temperature']+1
                         newdata['data'] = [{ 'uv': req.body['data']['uv'], 'wind': req.body['data']['wind'], 'humidity': req.body['data']['humidity'], 'temperature': req.body['data']['temperature'], 'time': timenow }]
-                        console.log(newdata)
+                     
                         // newdata['data']['time']=timenow
                         //console.log(newdata)
                         //console.log(result[0].date)
