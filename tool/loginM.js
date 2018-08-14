@@ -1,5 +1,5 @@
 
-exports.go = async function (req, res) {
+exports.go =  function (req, res) {
  
     const bcrypt = require('bcrypt');
     const MongoClient = require('mongodb').MongoClient
@@ -29,16 +29,17 @@ exports.go = async function (req, res) {
       /////////////check Session All(id&email)///////////////////////
        hav_ses= await dbo.collection(col_ses).find({session_id:String(req.sessionID),email:myobj.email}).toArray() 
        have_use= await dbo.collection(col_user).find(myobj).toArray()  
-       myobj.PASS=req.body.PASS,myobj.isAdmin=have_use[0].isAdmin
-       math=await bcrypt.compare(myobj.PASS,have_use[0].PASS)    
-       if(math&&have_use.length>0)login=true
+       myobj.PASS=req.body.PASS
+       if(have_use.length>0){myobj.isAdmin=have_use[0].isAdmin
+            math=await bcrypt.compare(myobj.PASS,have_use[0].PASS)    }
+       if(math&&have_use.length>0){login=true}
        if(login&&hav_ses.length<=0)
             { Bres.name=have_use[0].name,Bres.isAdmin=have_use[0].isAdmin,Bres.comfirm=true 
               dbo.collection(col_ses).insertOne({"session_id":req.sessionID,isAdmin:have_use[0].isAdmin,name:have_use[0].name,email:have_use[0].email},function (err, result) 
                     {console.log('welcom user'+JSON.stringify(Bres)+req.sessionID)}                                      
             )}            
-        else if(hav_ses.length>0&&login) {console.log('have session of '+have_use[0].name)}
-        else if (hav_ses.length>0&&!login) {console.log("not same pass or user"+JSON.stringify(hav_ses[0].session_id))}
+        else if(hav_ses.length>0&&login) {console.log('have session of '+have_use[0].name)+"login now"}
+        else if (!login) {console.log("not same pass or user"+JSON.stringify(req.body.email+req.body.PASS))}
         console.log("Bres="+JSON.stringify(Bres)) , res.end(JSON.stringify(Bres)) ,db.close() 
                                 }) 
     
