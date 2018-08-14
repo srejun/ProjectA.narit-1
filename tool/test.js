@@ -15,13 +15,10 @@ exports.go = function (req, res) {
         var year = date.getFullYear()
         var month = date.getMonth()
         var day = date.getDate()
-        var hour = date.getHours()
-        var minute = date.getMinutes()
-        var second = date.getSeconds()
         var checktime = new Date(year + "/" + (month + 1) + "/" + (day + 1))
         var alltime = new Date(year + "/" + (month + 1) + "/" + day)
-        console.log(alltime)
-        console.log(checktime)
+        //console.log(alltime)
+        // console.log(checktime)
         //console.log(req.body['data']['uv'])
 
         if (req.body['data']['uv'] === undefined) { req.body['data']['uv'] = 0 }
@@ -38,40 +35,44 @@ exports.go = function (req, res) {
         newdata['rate'] = 5
         newdata['date'] = alltime.getTime()
         newdata['data'] = [{ 'uv': req.body['data']['uv'], 'wind': req.body['data']['wind'], 'humidity': req.body['data']['humidity'], 'temperature': req.body['data']['temperature'], 'time': time }]
-
+        var testvalue
         dbo.collection("from").find({ location: req.body['location'], inBuilding: req.body['inBuilding'], date: newdata['date'] }).toArray(function (err, result) {
             if (err) throw err;
             /* if(result.length>0){
                 console.log(result[0].date)
                 console.log(checktime.getTime())
             } */
-
-            if (result.length > 0 && result[0].date < checktime.getTime()) {
-
-                MongoClient.connect(url, function (err, db) {
-                    if (err) throw err;
-                    var dbo = db.db("DataSensor");
-                    var adddata = { $push: { data: newdata.data[0] } }
-                    dbo.collection("from").update({ location: req.body['location'], inBuilding: req.body['inBuilding'] }, adddata, function (err, res) {
-                        if (err) throw err;
-                        console.log("1 document update");
-                        db.close();
-                    });
-                })
-            }
-            else {
-                MongoClient.connect(url, function (err, db) {
-                    if (err) throw err;
-                    var dbo = db.db("DataSensor");
-                    dbo.collection("from").insertOne(newdata, function (err, res) {
-                        if (err) throw err;
-                        console.log("1 document insert");
-                        db.close();
-                    });
-                })
-            }
+            testvalue=result.length
             db.close();
         });
+        setTimeout(() => {
+            console.log("test" + testvalue)
+        }, 100);
+        // if (result.length > 0 && result[0].date < checktime.getTime()) {
+
+        //     MongoClient.connect(url, function (err, db) {
+        //         if (err) throw err;
+        //         var dbo = db.db("DataSensor");
+        //         var adddata = { $push: { data: newdata.data[0] } }
+        //         dbo.collection("from").update({ location: req.body['location'], inBuilding: req.body['inBuilding'] }, adddata, function (err, res) {
+        //             if (err) throw err;
+        //             console.log("1 document update");
+        //             db.close();
+        //         });
+        //     })
+        // }
+        // else {
+        //     MongoClient.connect(url, function (err, db) {
+        //         if (err) throw err;
+        //         var dbo = db.db("DataSensor");
+        //         dbo.collection("from").insertOne(newdata, function (err, res) {
+        //             if (err) throw err;
+        //             console.log("1 document insert");
+        //             db.close();
+        //         });
+        //     })
+        // }
+
     })
     res.end("OKKKKK")
 }

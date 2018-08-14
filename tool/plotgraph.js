@@ -1,72 +1,76 @@
 var MongoClient = require('mongodb').MongoClient
 var url = "mongodb://localhost:27017/"
-exports.go=function(req,res){
-    if(req.body['location']===undefined||req.body['inBuilding']===undefined||req.body['typedate']===undefined){
-        res.end("ERROR")
-        throw("ERROR")
-    }
-    var date = "2018/08/13"
-    var time = "14:00:00"
-    var scale = new Date(date + " " + time).getTime()
-    let timescale={}
-    let meandata={}
-    let sum={}
-    let mean={}
-    MongoClient.connect(url, function(err, db) {
-        if (err) throw err;
-        var dbo = db.db("DataSensor");
-        dbo.collection("from").find({location: req.body['location'],inBuilding: req.body['inBuilding']}).toArray(function(err, result) {
-            if(err) throw err;
-            //console.log(result[0].data.length)
-            var i=0
-            //console.log(result[0].data[0].uv)
-                    
-                    var count
-                    var start=0
-            for(var index=0;index<48;index++){
-                count=0
-                timescale[index]=scale
-                    sum['uv']=0
-                    sum['wind']=0
-                    sum['humidity']=0
-                    sum['temperature']=0
-                    mean['uv']=0
-                    mean['wind']=0
-                    mean['humidity']=0
-                    mean['temperature']=0
-                    
-                    for(i=start;i<result[0].data.length;i++){
-                        //console.log(result[0].data[i].uv)
-                        if(scale<result[0].data[i].time&&result[0].data[i].time<scale+1800000){
-                            sum['uv']=sum['uv']+result[0].data[i].uv
-                            sum['wind']=sum['wind']+result[0].data[i].wind
-                            sum['humidity']=sum['humidity']+result[0].data[i].humidity
-                            sum['temperature']=sum['temperature']+result[0].data[i].temperature
-                            //console.log(sum['uv'])
-                            res.end("work")
-                            start++
-                            count++
-                            
-                        }
-                        //console.log(count)
-                        
-                    }
-                    console.log(start)
-                    //console.log(count)
-                    mean['uv']=(sum['uv']/count)
-                    mean['wind']=(sum['wind']/count)
-                    mean['humidity']=(sum['humidity']/count)
-                    mean['temperature']=(sum['temperature']/count)
-                    meandata[index]=[{uv:mean['uv'],wind:mean['wind'],humidity:mean['humidity'],temperature:mean['temperature']}]
-                
-                
-                
-                scale+=1800000
+exports.go = function (req, res) {
+   
+        if (req.body['location'] === undefined || req.body['inBuilding'] === undefined || req.body['typedate'] === undefined) {
+            res.end("ERROR")
+            throw ("ERROR")
+        }
+    
+    
+    
+    
+    
+    
+    
+        MongoClient.connect(url, function (err, db) {
+            if (err) throw err;
+            var dbo = db.db("DataSensor");
+            var mysort = {
+    
+                time: 1
+    
             }
-            console.log(timescale)
-            console.log(meandata)
-            
-            res.end("response")
+            dbo.collection("from").find({
+                location: req.body['location'],
+                inBuilding: req.body['inBuilding']
+            }).toArray(function (err, result) {
+                if (err) throw err;
+    
+    
+    
+             
+    
+               var d_f =new Date("Tue Aug 14 2018 13:33:03 GMT+0700 (SE Asia Standard Time)").getTime()
+               var d_t =new Date("Tue Aug 15 2018 12:06:03 GMT+0700 (SE Asia Standard Time)").getTime()
+               
+             
+                var form = {
+                    humid:[],
+                    uv:[],
+                    tmp:[],
+                    wind:[],
+                    time:[]
+                }
+                var bs = function (t) {
+                    var s = 0;
+                    var e = result[0].data.length - 1;
+                    while (s != (e - 1)) {
+                        var m = parseInt((s + e) / 2);
+                        if (t === result[0].data[m].time) {
+                            s = m;
+                            break;
+                        } else if (t < result[0].data[m].time) e = m
+                        else if (t > result[0].data[m].time) s = m
+                    }
+                    return s;
+    
+                }; 
+                 var st = bs(d_f)
+               var en = bs(d_t)
+                for(var i =st;i<en;i++)
+                {
+                        form.humid.push(result[0].data[i].humidity)
+                        form.time.push(new Date(result[0].data[i].time).toLocaleString())
+                        form.uv.push(result[0].data[i].uv)
+                        form.wind.push(result[0].data[i].wind)
+                        form.tmp.push(result[0].data[i].temperature)
+                }
+                console.log(JSON.stringify(form))
+    
+                
+                res.end(JSON.stringify(form))
+            });
         });
-    });
+  
 }
