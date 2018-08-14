@@ -41,14 +41,14 @@ app.post('/logout', Lout.go);
 
 
 ///login user&admin
-var Lin=require('./tool/login')
+var Lin=require('./tool/loginM')
 app.post('/login',Lin.go)
 
 ////delete user&admin
 var del=require('./tool/dis')
 app.post('/disableuser',del.go)
 ///regis,add user&admin
-var reg=require('./tool/regis')
+var reg=require('./tool/regisM')
 app.post('/register', reg.go)
       
 //edit password///          
