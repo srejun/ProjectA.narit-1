@@ -1,7 +1,7 @@
 var MongoClient = require('mongodb').MongoClient
 var url = "mongodb://localhost:27017/"
 exports.go = function (req, res) {
-    if (req.body['location'] === undefined || req.body['inBuilding'] === undefined || req.body['data'] === undefined) {
+    if (req.body['location'] === undefined || req.body['inBuilding'] === undefined || req.body['data'] === undefined|| req.body['date'] === undefined) {
         res.end("ERROR")
         throw ("ERROR")
     }
@@ -12,14 +12,17 @@ exports.go = function (req, res) {
         var date = new Date()
         //var time = date.getTime()
         myobj['data'].time = time
-        var year = date.getFullYear()
-        var month = date.getMonth()
-        var day = date.getDate()
+        
         var hour = date.getHours()
         var minute = date.getMinutes()
         var second = date.getSeconds()
-        var checktime = new Date(year + "/" + (month + 1) + "/" + (day + 1))
-        var alltime = new Date(year + "/" + (month + 1) + "/" + (day))
+        
+        var alltime = new Date(req.body['date'])
+        var year = alltime.getFullYear()
+        var month = alltime.getMonth()
+        var day = alltime.getDate()
+        var sum = year+"/"+(month+1)+"/"+(day+1)
+        var checktime = new Date(sum)
         var time = new Date(alltime).getTime()
         console.log(alltime)
         console.log(time)
