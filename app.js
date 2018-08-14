@@ -8,15 +8,25 @@ const app = express()
 app.use(validator())
 app.use(cookieParser())
 app.use(bodyParser.json())
-app.use(cors())
+app.use(cors({
+  origin:['http://localhost:8080'],
+  methods:['GET','POST'],
+  credentials: true ,// enable set cookie
+  cookie:{maxAge:60*1000*60*3}
+}));
 app.use(bodyParser.urlencoded({
   extended: false
 }))
+ const clientSessions = require("client-sessions");
+app.use(clientSessions({
+  secret: '0GBlJZ9EKBt2Zbi2flRPvztczCewBxXK' // set this to a long random string!
+})); 
 app.use(session({
   secret: 'keyboard cat',
-  cookie: {
-    secure: true
-  }
+  cookieName: 'mySession',
+  duration: 60*1000*60*3,
+  cookie:{maxAge:60*1000*60*3}
+
 }))
 
 /////////////////////////////////////////////////////////////////////
