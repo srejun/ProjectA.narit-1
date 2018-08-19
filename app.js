@@ -22,10 +22,13 @@ app.use(clientSessions({
   secret: '0GBlJZ9EKBt2Zbi2flRPvztczCewBxXK' // set this to a long random string!
 })); 
 app.use(session({
-  secret: 'keyboard cat',
+  secret: 'keyboard cat555',
   cookieName: 'mySession',
   duration: 60*1000*60*3,
-  cookie:{maxAge:60*1000*60*3}
+  cookie:{maxAge:60*1000*60*3},
+  resave:false,
+  saveUninitialized:true
+
 
 }))
 
@@ -36,7 +39,7 @@ var show=require('./tool/show')
 app.post('/showuser',show.go )
 
 ///logout user&admin
-var Lout=require('./tool/logout')
+var Lout=require('./tool/logoutM')
 app.post('/logout', Lout.go);
 
 
@@ -45,14 +48,14 @@ var Lin=require('./tool/loginM')
 app.post('/login',Lin.go)
 
 ////delete user&admin
-var del=require('./tool/dis')
+var del=require('./tool/disM')
 app.post('/disableuser',del.go)
 ///regis,add user&admin
 var reg=require('./tool/regisM')
 app.post('/register', reg.go)
       
 //edit password///          
-var Cpass=require('./tool/edit')
+var Cpass=require('./tool/editM')
 app.post('/edituser', Cpass.go);
 
 
