@@ -18,11 +18,13 @@ var getdatabytime = require('./tool/getdatabytime')
 app.post('/api/getdbytime', getdatabytime.go)
 var plotgraph = require('./tool/plotgraph')
 app.post('/api/getgraph', plotgraph.go)
-var examinput = require('./tool/examinput')
+var examinput = require('./tool/examinput') //test sensor input data
 app.post('/api/testinput', examinput.go)
-
 var test = require('./tool/test')
-app.post('/api/test', test.go) //sensor input update data
+app.post('/api/test', test.go) //test sensor input update data
+var inputlocation = require('./tool/newinputdata')
+app.post('/api/testcollection',inputlocation.go)
+
 
 
 
@@ -287,9 +289,7 @@ app.post('/api/test', test.go) //sensor input update data
 app.get('/api/far', function (req, res) { //test time
     var date = new Date()
     var day = date.getUTCFullYear()
-    var time = date.getTime()
-    var year = date.getFullYear()
-    var month = date.getMonth()
+    
     //console.log(typeof(month))
     var day = date.getDate()
     var hour = date.getHours()
@@ -297,11 +297,17 @@ app.get('/api/far', function (req, res) { //test time
     var second = date.getSeconds()
 
     //console.log(year+"/"+month+"/"+day)
-    var alltime = new Date(year + "/" + (month + 1) + "/" + (day + 1))
+    var d = "2018/08/14"
+    var alltime = new Date(d)
     var y = date.toLocaleDateString()
-
-    //console.log("locale"+y)
-    console.log(time)
+    var time = alltime.getTime()
+    var year = alltime.getFullYear()
+    var month = alltime.getMonth()
+    var sum = year+"/"+month+"/"+day
+    console.log(sum)
+    console.log(d)
+    console.log("locale"+y)
+    //console.log(time)
     //console.log("convert"+checktime.getTime())
     console.log(alltime)
     console.log(alltime.getTime())
