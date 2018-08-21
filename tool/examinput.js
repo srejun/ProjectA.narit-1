@@ -53,7 +53,7 @@ exports.go = function (req, res) {
                     var dbo = db.db("DataSensor");
                     for (i = 0; i < 4000; i++) {
                         timenow = timenow + (30000)
-                        
+                    
                         req.body['data']['uv']=req.body['data']['uv']+1
                         req.body['data']['wind']=req.body['data']['wind']+1
                         req.body['data']['humidity']=req.body['data']['humidity']+1

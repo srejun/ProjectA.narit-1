@@ -6,13 +6,6 @@ exports.go = function (req, res) {
             res.end("ERROR")
             throw ("ERROR")
         }
-    
-    
-    
-    
-    
-    
-    
         MongoClient.connect(url, function (err, db) {
             if (err) throw err;
             var dbo = db.db("DataSensor");
@@ -21,10 +14,11 @@ exports.go = function (req, res) {
             }
             dbo.collection("from").find({
                 location: req.body['location'],
-                inBuilding: req.body['inBuilding']
+                inBuilding: req.body['inBuilding'],
+                date: new Date(req.body['typedate']+" 00:00:00").getTime()
             }).toArray(function (err, result) {
                 if (err) throw err;
-            var timenow = result[0].data[result[0].data.length - 1].time
+
                var d_f =new Date(req.body['typedate']+" "+"00:00:00 ").getTime()
                var d_t =new Date(req.body['typedate']+" "+"23:59:59 ").getTime()  
                var h_t = 0,uv_t=0,tmp_t=0,wind_t=0,round = 0;
@@ -35,6 +29,7 @@ exports.go = function (req, res) {
                     wind:[],
                     time:[]
                 }
+
             //     var bs = function (t) {
             //         var s = 0;
             //         var e = result[0].data.length - 1;
@@ -50,7 +45,10 @@ exports.go = function (req, res) {
             //     }; 
             //    var st = bs(d_f)
             //    var en = bs(d_t)
-                for(var i =0;i<result[0].data.length;i++)
+
+
+
+                     for(var i =0;i<result[0].data.length;i++)
                 {
                     h_t += result[0].data[i].humidity
                     uv_t += result[0].data[i].uv
@@ -64,6 +62,7 @@ exports.go = function (req, res) {
                          form.uv.push(uv_t/(round*1000))
                          form.wind.push(wind_t/(round*1000))
                          form.tmp.push(tmp_t/(round*1000))
+                       
                                 h_t = 0
                                 uv_t=0
                                 tmp_t=0
@@ -71,6 +70,8 @@ exports.go = function (req, res) {
                                 round = 0;
                         }
                 }
+              
+        
                 res.end(JSON.stringify(form))
             });
         });
