@@ -37,6 +37,7 @@ exports.go = function (req, res) {
         newdata['date'] = alltime.getTime()
         var adddata
         var find = "nodata"
+        
         dbo.collection(req.body['location']).find({  inBuilding: req.body['inBuilding']}).toArray(function (err, result) {
             if (err) throw err;
             find = result.length
@@ -63,7 +64,7 @@ exports.go = function (req, res) {
                         //console.log(newdata)
                         //console.log(result[0].date)
                         //console.log("c"+checktime.getTime()+typeof(checktime.getTime()))
-                        //console.log("t"+timenow+typeof(timenow))  
+                        //console.log("t"+timenow+typeof(timenow))
                         adddata = { $push: { data: newdata.data[0] } }
                         if (timenow < checktime.getTime()) {
 

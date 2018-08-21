@@ -5,7 +5,7 @@ exports.go = function (req, res) {
         res.end("ERROR")
         throw ("ERROR")
     }
-    MongoClient.connect(url, function (err, db) {
+    MongoClient.connect(url, async function (err, db) {
         if (err) throw err;
         var dbo = db.db("DataSensor");
         var myobj = req.body
@@ -39,39 +39,72 @@ exports.go = function (req, res) {
         newdata['date'] = alltime.getTime()
         newdata['data'] = [{ 'uv': req.body['data']['uv'], 'wind': req.body['data']['wind'], 'humidity': req.body['data']['humidity'], 'temperature': req.body['data']['temperature'], 'time': time }]
 
-        dbo.collection("from").find({ location: req.body['location'], inBuilding: req.body['inBuilding'], date: newdata['date'] }).toArray(function (err, result) {
-            if (err) throw err;
-            /* if(result.length>0){
-                console.log(result[0].date)
-                console.log(checktime.getTime())
-            } */
-
-            if (result.length > 0 && result[0].date < checktime.getTime()) {
-
-                MongoClient.connect(url, function (err, db) {
-                    if (err) throw err;
-                    var dbo = db.db("DataSensor");
-                    var adddata = { $push: { data: newdata.data[0] } }
-                    dbo.collection("from").update({ location: req.body['location'], inBuilding: req.body['inBuilding'] }, adddata, function (err, res) {
-                        if (err) throw err;
-                        console.log("1 document update");
-                        db.close();
-                    });
-                })
+        var datalo = {}
+        var newlo = {}
+        datalo = { location: req.body['location'] }
+        var haslo = true
+        const find = await dbo.collection("location").find().toArray()     //insert new location
+        //console.log("lo"+JSON.stringify(find[0].location))
+        //console.log(data.location)
+        //console.log(typeof(find.length))
+        //console.log(find.hasOwnProperty(0))
+        //console.log(find.length)
+        if (find.hasOwnProperty(0)) {
+            for (var i = 0; i < find.length; i++) {
+                console.log("infile" + find[0].datalo.location[i])
+                if (find[0].datalo.location[i] === datalo.location) {
+                    haslo = false
+                }
             }
-            else {
-                MongoClient.connect(url, function (err, db) {
+
+            if (haslo) {
+                dbo.collection("location").insertOne({ datalo }, function (err, res) {
                     if (err) throw err;
-                    var dbo = db.db("DataSensor");
-                    dbo.collection("from").insertOne(newdata, function (err, res) {
-                        if (err) throw err;
-                        console.log("1 document insert");
-                        db.close();
-                    });
-                })
+                    console.log("1 document update");
+                    db.close();
+                });
             }
-            db.close();
-        });
+        }
+        else {
+            dbo.collection("location").insertOne({ datalo }, function (err, res) {
+                if (err) throw err;
+                console.log("1 document insert");
+                db.close();
+            });
+        }
+
+        var result = await dbo.collection("from").find({ location: req.body['location'], inBuilding: req.body['inBuilding'], date: newdata['date'] }).toArray()
+        /* if(result.length>0){
+            console.log(result[0].date)
+            console.log(checktime.getTime())
+        } */
+
+        if (result.length > 0 && result[0].date < checktime.getTime()) {
+
+            MongoClient.connect(url, function (err, db) {
+                if (err) throw err;
+                var dbo = db.db("DataSensor");
+                var adddata = { $push: { data: newdata.data[0] } }
+                dbo.collection(req.body['location']).update({ inBuilding: req.body['inBuilding'] }, adddata, function (err, res) {
+                    if (err) throw err;
+                    console.log("1 document update");
+                    db.close();
+                });
+            })
+        }
+        else {
+            MongoClient.connect(url, function (err, db) {
+                if (err) throw err;
+                var dbo = db.db("DataSensor");
+                dbo.collection(req.body['location']).insertOne(newdata, function (err, res) {
+                    if (err) throw err;
+                    console.log("1 document insert");
+                    db.close();
+                });
+            })
+        }
+        db.close();
+
     })
     res.end("OKKKKK")
 }
