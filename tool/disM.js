@@ -25,14 +25,15 @@ exports.go =  function (req, res) {
       var dbo = db.db(DB);
        have_ses= await dbo.collection(col_ses).find({session_id:req.sessionID,isAdmin:true}).toArray()
        have_use= await dbo.collection(col_user).find(myobj).toArray()
-       if(have_ses.length>0){if(have_ses[0].email==myobj.email){Bres.status=false,Bres.err='del your self'}else{         
-         console.log('delete user form col_ses,col_use'),Bres.status=true
+       if(have_ses.length>0){if(have_ses[0].email==myobj.email){Bres.status=false,Bres.err='del your self'}
+       else{         
+         console.log('delete user form col_ses,col_use'),
          await dbo.collection(col_ses).deleteOne(myobj)
-         await dbo.collection(col_user).updateOne(myobj, newvalues)
+         await dbo.collection(col_user).updateOne(myobj, newvalues)       
+         if(have_use.length<=0){Bres.status=false,Bres.err='No user',console.log('No user in DB')}
+         else Bres.status=true
        }}
        else if(have_ses.length<=0){Bres.status=false,Bres.err="permission denied",console.log('not admin')}
-       else if(have_use.length<=0){Bres.status=false,Bres.err='No user',console.log('No user in DB')}
-       //else if(have_ses.length>0&&have_use.length>0)
       
        
         console.log("Bres="+JSON.stringify(Bres)+JSON.stringify(req.session.cookie.expires)+JSON.stringify(req.sessionID)) , res.end(JSON.stringify(Bres)) ,db.close() 
