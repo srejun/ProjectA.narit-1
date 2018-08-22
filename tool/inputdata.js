@@ -32,6 +32,11 @@ exports.go = function (req, res) {
         //console.log(req.body['data']['humidity'])
         if (req.body['data']['temperature'] === undefined) { req.body['data']['temperature'] = 0 }
         //console.log(req.body['data']['temperature'])
+
+        var aveuv = null
+        var avewind = null
+        var avehumidity = null
+        var avetem = null
         let newdata = {}
         newdata['location'] = req.body['location']
         newdata['inBuilding'] = req.body['inBuilding']
@@ -49,9 +54,9 @@ exports.go = function (req, res) {
         //console.log(typeof(find.length))
         //console.log(find.hasOwnProperty(0))
         //console.log(find.length)
-        if (find.hasOwnProperty(0)) {
+        if (find.hasOwnProperty(0) === true) {
             for (var i = 0; i < find.length; i++) {
-                console.log("infile" + find[0].datalo.location[i])
+                //console.log("infile" + find[0].datalo.location[i])
                 if (find[0].datalo.location[i] === datalo.location) {
                     haslo = false
                 }
@@ -73,18 +78,28 @@ exports.go = function (req, res) {
             });
         }
 
-        var result = await dbo.collection("from").find({ location: req.body['location'], inBuilding: req.body['inBuilding'], date: newdata['date'] }).toArray()
+        var result = await dbo.collection(req.body['location']).find({ inBuilding: req.body['inBuilding'], date: newdata['date'] }).toArray()
         /* if(result.length>0){
             console.log(result[0].date)
             console.log(checktime.getTime())
         } */
 
         if (result.length > 0 && result[0].date < checktime.getTime()) {
+            console.log(result[0])
+            console.log(result[0].data.length)
+            console.log(result[0].ave[0].uv)
+            console.log(newdata.data[0].uv)
+            aveuv = ((result[0].data.length * result[0].ave[0].uv) + newdata.data[0].uv) / (result[0].data.length + 1)
+            avewind = ((result[0].data.length * result[0].ave[0].wind) + newdata.data[0].wind) / (result[0].data.length + 1)
+            avehumidity = ((result[0].data.length * result[0].ave[0].humidity) + newdata.data[0].humidity) / (result[0].data.length + 1)
+            avetem = ((result[0].data.length * result[0].ave[0].temperature) + newdata.data[0].temperature) / (result[0].data.length + 1)
+            newdata['ave'] = [{ 'uv': aveuv, 'wind': avewind, 'humidity': avehumidity, 'temperature': avetem }]
+            //console.log("uv"+aveuv+"wind"+avewind+"humidity"+avehumidity+"tem"+avetem)
 
             MongoClient.connect(url, function (err, db) {
                 if (err) throw err;
                 var dbo = db.db("DataSensor");
-                var adddata = { $push: { data: newdata.data[0] } }
+                var adddata = { $push: { data: newdata.data[0] }, $set: { ave: newdata.ave } }
                 dbo.collection(req.body['location']).update({ inBuilding: req.body['inBuilding'] }, adddata, function (err, res) {
                     if (err) throw err;
                     console.log("1 document update");
@@ -93,6 +108,7 @@ exports.go = function (req, res) {
             })
         }
         else {
+            newdata['ave'] = [{ 'uv': req.body['data']['uv'], 'wind': req.body['data']['wind'], 'humidity': req.body['data']['humidity'], 'temperature': req.body['data']['temperature'] }]
             MongoClient.connect(url, function (err, db) {
                 if (err) throw err;
                 var dbo = db.db("DataSensor");
