@@ -5,7 +5,14 @@ exports.go = function (req, res) {
         if (req.body['location'] === undefined || req.body['inBuilding'] === undefined || req.body['typedate'] === undefined) {
             res.end("ERROR")
             throw ("ERROR")
-        }     
+        }
+    
+    
+    
+    
+    
+    
+    
         MongoClient.connect(url, function (err, db) {
             if (err) throw err;
             var dbo = db.db("DataSensor");
@@ -64,7 +71,6 @@ exports.go = function (req, res) {
                                 round = 0;
                         }
                 }
-                console.log(JSON.stringify(form))
                 res.end(JSON.stringify(form))
             });
         });
