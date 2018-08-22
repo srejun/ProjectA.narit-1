@@ -49,7 +49,7 @@ exports.go = function (req, res) {
         //console.log(typeof(find.length))
         //console.log(find.hasOwnProperty(0))
         //console.log(find.length)
-        if (find.hasOwnProperty(0)) {
+        if (find.hasOwnProperty(0)===true) {
             for (var i = 0; i < find.length; i++) {
                 console.log("infile" + find[0].datalo.location[i])
                 if (find[0].datalo.location[i] === datalo.location) {
