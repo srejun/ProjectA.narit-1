@@ -6,40 +6,38 @@ exports.go = function (req, res) {
         res.end("ERROR")
         throw ("ERROR")
     }
-
-
-
-
-
-
+    console.log(new Date(req.body['typedate']).getTime())
+   
     var notfind = {}
     notfind['data']={undefined}
     MongoClient.connect(url, async function (err, db) {
+        var form = {
+            humid: [],
+            uv: [],
+            tmp: [],
+            wind: [],
+            time: []
+        }
         if (err) throw err;
         var dbo = db.db("DataSensor");
         var mysort = {
             time: 1
         }
         var result = await dbo.collection(req.body['location']).find({
-            inBuilding: req.body['inBuilding']
+            inBuilding: req.body['inBuilding'] ,date:new Date(req.body['typedate'] + " " + "00:00:00 ").getTime()
         }).toArray()
         console.log(result)
         console.log(result.hasOwnProperty(0))
         if (result.hasOwnProperty(0)===false) {
-            res.end(undefined)
+           
+            res.end(null)
         }
         else {
             var timenow = result[0].data[result[0].data.length - 1].time
             var d_f = new Date(req.body['typedate'] + " " + "00:00:00 ").getTime()
             var d_t = new Date(req.body['typedate'] + " " + "23:59:59 ").getTime()
             var h_t = 0, uv_t = 0, tmp_t = 0, wind_t = 0, round = 0;
-            var form = {
-                humid: [],
-                uv: [],
-                tmp: [],
-                wind: [],
-                time: []
-            }
+            
             //     var bs = function (t) {
             //         var s = 0;
             //         var e = result[0].data.length - 1;
@@ -55,6 +53,7 @@ exports.go = function (req, res) {
             //     }; 
             //    var st = bs(d_f)
             //    var en = bs(d_t)
+            console.log(new Date(req.body['typedate']).getTime())
             for (var i = 0; i < result[0].data.length; i++) {
                 h_t += result[0].data[i].humidity
                 uv_t += result[0].data[i].uv
@@ -62,11 +61,11 @@ exports.go = function (req, res) {
                 wind_t += result[0].data[i].wind
                 round++;
                 if (((new Date(result[0].data[i].time).getTime() - new Date(result[0].data[0].time).getTime()) % 1800000) == 0) {
-                    form.humid.push(h_t / (round * 1000))
+                    form.humid.push(h_t / round )
                     form.time.push(new Date(result[0].data[i].time).toLocaleTimeString())
-                    form.uv.push(uv_t / (round * 1000))
-                    form.wind.push(wind_t / (round * 1000))
-                    form.tmp.push(tmp_t / (round * 1000))
+                    form.uv.push(uv_t/ round  )
+                    form.wind.push(wind_t/ round )
+                    form.tmp.push(tmp_t / round )
                     h_t = 0
                     uv_t = 0
                     tmp_t = 0

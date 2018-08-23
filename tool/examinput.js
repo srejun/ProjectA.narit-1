@@ -51,13 +51,13 @@ exports.go = function (req, res) {
                 MongoClient.connect(url, function (err, db) {
                     if (err) throw err;
                     var dbo = db.db("DataSensor");
-                    for (i = 0; i < 4000; i++) {
+                    for (i = 0; i < 1440; i++) {
                         timenow = timenow + (30000)
                         
-                        req.body['data']['uv']=req.body['data']['uv']+1
-                        req.body['data']['wind']=req.body['data']['wind']+1
-                        req.body['data']['humidity']=req.body['data']['humidity']+1
-                        req.body['data']['temperature']=req.body['data']['temperature']+1
+                        req.body['data']['uv']=Math.floor((Math.random() * 100) + 1);
+                        req.body['data']['wind']=Math.floor((Math.random() * 100) + 1);
+                        req.body['data']['humidity']=Math.floor((Math.random() * 100) + 1);
+                        req.body['data']['temperature']=Math.floor((Math.random() * 100) + 1);
                         newdata['data'] = [{ 'uv': req.body['data']['uv'], 'wind': req.body['data']['wind'], 'humidity': req.body['data']['humidity'], 'temperature': req.body['data']['temperature'], 'time': timenow }]
                         //console.log(newdata)
                         // newdata['data']['time']=timenow

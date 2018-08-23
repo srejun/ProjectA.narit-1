@@ -22,8 +22,8 @@ var examinput = require('./tool/examinput') //test sensor input data
 app.post('/api/testinput', examinput.go)
 var test = require('./tool/test')
 app.post('/api/test', test.go) //test sensor input update data
-var inputlocation = require('./tool/newinputdata')
-app.post('/api/testcollection',inputlocation.go)
+// var inputlocation = require('./tool/newinputdata')
+// app.post('/api/testcollection',inputlocation.go)
 
 
 
