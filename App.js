@@ -12,7 +12,7 @@ app.use(cors({
   origin:['http://localhost:8080'],
   methods:['GET','POST'],
   credentials: true ,// enable set cookie
-  cookie:{maxAge:60*1000*60*3}
+  //cookie:{maxAge:60*1000*60*3}
 }));
 app.use(bodyParser.urlencoded({
   extended: false
@@ -23,9 +23,9 @@ app.use(clientSessions({
 })); 
 app.use(session({
   secret: 'keyboard cat555',
-  cookieName: 'mySession',
-  duration: 60*1000*60*3,
-  cookie:{maxAge:60*1000*60*3},
+  //cookieName: 'mySession',
+  //duration: 60*1000*60*3,
+  //cookie:{maxAge:60*1000*60*3},
   resave:false,
   saveUninitialized:true
 
@@ -35,7 +35,7 @@ app.use(session({
 /////////////////////////////////////////////////////////////////////
 
 ///show all user only admin can see all admin & user
-var show=require('./tool/show')
+var show=require('./tool/showM')
 app.post('/showuser',show.go )
 
 ///logout user&admin
