@@ -36,7 +36,7 @@ exports.go = function (req, res) {
         //console.log(req.body['data']['humidity'])
         if (req.body['data']['temperature'] === undefined) { req.body['data']['temperature'] = 0 }
         //console.log(req.body['data']['temperature'])
-
+        //
         var aveuv = null
         var avewind = null
         var avehumidity = null

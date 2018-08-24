@@ -12,6 +12,7 @@ exports.go = function (req, res) {
         var date = new Date()
         var time = date.getTime()
         myobj['data'].time = time
+        //
         // var year = date.getFullYear()
         // var month = date.getMonth()
         // var day = date.getDate()

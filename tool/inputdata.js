@@ -38,7 +38,7 @@ exports.go = function (req, res) {
         var avehumidity = null
         var avetem = null
         let newdata = {}
-        newdata['location'] = req.body['location']
+        //newdata['location'] = req.body['location']
         newdata['inBuilding'] = req.body['inBuilding']
         newdata['rate'] = 5
         newdata['date'] = alltime.getTime()
@@ -78,7 +78,7 @@ exports.go = function (req, res) {
                 db.close();
             });
         }
-
+        //
         var result = await dbo.collection(req.body['location']).find({ inBuilding: req.body['inBuilding'], date: newdata['date'] }).toArray()
         /* if(result.length>0){
             console.log(result[0].date)
