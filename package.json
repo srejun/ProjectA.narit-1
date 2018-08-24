@@ -1,33 +1,31 @@
 {
-  "name": "package",
+  "name": "weather",
   "version": "1.0.0",
   "description": "",
-  "main": "App.js",
+  "main": "app.js",
+  "dependencies": {
+    "bcrypt": "^3.0.0",
+    "body-parser": "^1.18.3",
+    "connect-mongodb-session": "^2.0.3",
+    "cookie": "^0.3.1",
+    "cookie-parser": "^1.4.3",
+    "cor": "0.0.0",
+    "cors": "^2.8.4",
+    "express": "^4.16.3",
+    "express-session": "^1.15.6",
+    "express-validator": "^5.3.0",
+    "mongod": "^2.0.0",
+    "mongodb": "^3.1.1",
+    "nodemon": "^1.18.3",
+    "npm": "^6.3.0",
+    "passport": "^0.4.0"
+  },
+  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node App.js",
-    "dev": "nodemon App.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/srejun/ProjectA.narit-1.git"
+    "start": "node app.js",
+    "dev": "nodemon app.js"
   },
   "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/srejun/ProjectA.narit-1/issues"
-  },
-  "homepage": "https://github.com/srejun/ProjectA.narit-1#readme",
-  "dependencies": {
-    "axios": "^0.18.0",
-    "body-parser": "^1.18.3",
-    "cors": "^2.8.4",
-    "delay": "^3.0.0",
-    "express": "^4.16.3",
-    "mongod": "^2.0.0",
-    "mongodb": "^3.1.1"
-  },
-  "devDependencies": {
-    "nodemon": "^1.18.3"
-  }
+  "license": "ISC"
 }
