@@ -7,7 +7,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
 var MongoClient = require('mongodb').MongoClient
-var url = require("..config").url
+var url = require("../config").url
 const location = require('./location')
 var data = new location
 MongoClient.connect(url, function (err, db) {

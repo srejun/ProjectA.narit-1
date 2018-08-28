@@ -1,5 +1,5 @@
 var MongoClient = require('mongodb').MongoClient
-var url = require("..config").url
+var url = require("../config").url
 exports.go = function (req, res) {
     if (req.body['location'] === undefined || req.body['inBuilding'] === undefined || req.body['data'] === undefined) {
         res.end("ERROR")
