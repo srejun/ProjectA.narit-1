@@ -1,5 +1,5 @@
 var MongoClient = require('mongodb').MongoClient
-var url = "mongodb://localhost:27017/"
+var url = require("..config").url
 exports.go = function (req, res) {
     var date = new Date()
     var value = { confirm: false, locations: [] }

@@ -1,6 +1,6 @@
 exports.go = function (req, res) {
     const MongoClient = require('mongodb').MongoClient
-    const url = "mongodb://localhost:27017/"
+  const url = require("..config").url
     const col_ses = "Sessions"
     const col_user = "user"
     const DB = "DataSensor"
