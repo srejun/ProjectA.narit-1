@@ -60,7 +60,7 @@ app.post('/api/getDatas', getDatas.go)
 var newLocation = require('./tool/newLocation')
 app.post('/api/newLocation', newLocation.go)
 
-var getDatabyTime = require('./tool/getDatabyTime')
+var getDatabyTime = require('./tool/getDatabytime')
 app.post('/api/getDatabyTime', getDatabyTime.go)
 
 var getLocations = require('./tool/getLocations')
