@@ -28,7 +28,7 @@ exports.go = async function (req, res) {
 
 
 
-  MongoClient.connect(url, async function (err, db) {
+  MongoClient.connect(url, { useNewUrlParser: true }, async function (err, db) {
     if (err) throw err;
     var dbo = db.db(DB);
     have_ses = await dbo.collection(col_ses).find({ session_id: req.sessionID, isAdmin: true }).toArray() ////check session

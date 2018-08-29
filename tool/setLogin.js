@@ -24,7 +24,7 @@ exports.go = function (req, res) {
     if (errorValidate) {
         console.log(JSON.stringify(errorValidate)), res.end(JSON.stringify(value))
     }
-    MongoClient.connect(url, async function (err, db) {
+    MongoClient.connect(url, { useNewUrlParser: true }, async function (err, db) {
         if (err) throw err;
         var dbo = db.db(DB);
         /////////////check Session All(id&email)///////////////////////

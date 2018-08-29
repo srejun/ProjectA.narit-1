@@ -5,7 +5,7 @@ exports.go = function (req, res) {
         res.end("ERROR")
         throw ("ERROR")
     }
-    MongoClient.connect(url, async function (err, db) {
+    MongoClient.connect(url, { useNewUrlParser: true }, async function (err, db) {
         if (err) throw err;
         var dbo = db.db("DataSensor");
         var myobj = req.body
@@ -99,7 +99,7 @@ exports.go = function (req, res) {
             newdata['ave'] = [{ 'uv': aveuv, 'wind': avewind, 'humidity': avehumidity, 'temperature': avetem }]
             //console.log("uv"+aveuv+"wind"+avewind+"humidity"+avehumidity+"tem"+avetem)
 
-            MongoClient.connect(url, function (err, db) {
+            MongoClient.connect(url, { useNewUrlParser: true } ,function (err, db) {
                 if (err) throw err;
                 var dbo = db.db("DataSensor");
                 var adddata = { $push: { data: newdata.data[0] }, $set: { ave: newdata.ave } }
@@ -112,7 +112,7 @@ exports.go = function (req, res) {
         }
         else {
             newdata['ave'] = [{ 'uv': req.body['data']['uv'], 'wind': req.body['data']['wind'], 'humidity': req.body['data']['humidity'], 'temperature': req.body['data']['temperature'] }]
-            MongoClient.connect(url, function (err, db) {
+            MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
                 if (err) throw err;
                 var dbo = db.db("DataSensor");
                 dbo.collection(req.body['location']).insertOne(newdata, function (err, res) {

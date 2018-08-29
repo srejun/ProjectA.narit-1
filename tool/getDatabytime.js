@@ -7,7 +7,7 @@ exports.go = function (req, res) {
         throw ("ERROR")
     }
     var mysort = { location: 1 };
-    MongoClient.connect(url, function (err, db) {
+    MongoClient.connect(url, { useNewUrlParser: true } ,function (err, db) {
         if (err) throw err;
         var dbo = db.db("DataSensor");
         dbo.collection("from").find({ location: req.body['location'], inBuilding: req.body['inBuilding'] }).toArray(function (err, result) {

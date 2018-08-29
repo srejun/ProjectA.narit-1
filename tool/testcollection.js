@@ -10,7 +10,7 @@ var MongoClient = require('mongodb').MongoClient
 var url = require("../config").url
 const location = require('./location')
 var data = new location
-MongoClient.connect(url, function (err, db) {
+MongoClient.connect(url, { useNewUrlParser: true } ,function (err, db) {
     
         if (err) throw err
         console.log(data.addlo())
