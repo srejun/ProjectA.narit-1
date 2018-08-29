@@ -99,7 +99,7 @@ exports.go = function (req, res) {
             newdata['ave'] = [{ 'uv': aveuv, 'wind': avewind, 'humidity': avehumidity, 'temperature': avetem }]
             //console.log("uv"+aveuv+"wind"+avewind+"humidity"+avehumidity+"tem"+avetem)
 
-            MongoClient.connect(url, { useNewUrlParser: true } ,function (err, db) {
+            MongoClient.connect(url ,function (err, db) {
                 if (err) throw err;
                 var dbo = db.db("DataSensor");
                 var adddata = { $push: { data: newdata.data[0] }, $set: { ave: newdata.ave } }

@@ -5,7 +5,7 @@ exports.go = function (req, res) {
     var value = { confirm: false, err: '', datas: [] }
     var datas = []
 
-    MongoClient.connect(url, { useNewUrlParser: true }, async function (err, db) {
+    MongoClient.connect(url, async function (err, db) {
         if (err) throw err;
         var dbo = db.db("DataSensor");
         var have_ses = await dbo.collection("Sessions").find({ session_id: req.sessionID }).toArray()

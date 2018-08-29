@@ -4,7 +4,7 @@ exports.go = function (req, res) {
   const col_ses = "Sessions"
   const DB = "DataSensor"
 
-  MongoClient.connect(url, { useNewUrlParser: true }, async function (err, db) {
+  MongoClient.connect(url, async function (err, db) {
     if (err) throw err;
     var dbo = db.db(DB);
     var del = await dbo.collection(col_ses).deleteOne({ session_id: req.sessionID })

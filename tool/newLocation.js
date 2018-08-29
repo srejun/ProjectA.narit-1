@@ -1,7 +1,7 @@
 var MongoClient = require('mongodb').MongoClient
 var url = require("../config").url
 exports.go = function (req, res) {
-    MongoClient.connect(url, { useNewUrlParser: true }, async function (err, db) {
+    MongoClient.connect(url, async function (err, db) {
         if (err) throw err;
         var dbo = db.db("DataSensor");
         var keylocation = 1

@@ -5,7 +5,7 @@ exports.go = function (req, res) {
         res.end("ERROR")
         throw ("ERROR")
     }
-    MongoClient.connect(url, { useNewUrlParser: true }, async function (err, db) {
+    MongoClient.connect(url, async function (err, db) {
         if (err) throw err;
         var dbo = db.db("DataSensor");
         var myobj = req.body

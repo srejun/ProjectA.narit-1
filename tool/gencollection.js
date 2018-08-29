@@ -9,7 +9,7 @@ app.use(bodyParser.json())
 var MongoClient = require('mongodb').MongoClient
 var url = require("../config").url
 
-MongoClient.connect(url, { useNewUrlParser: true } ,function (err, db) {
+MongoClient.connect(url ,function (err, db) {
     if (err) throw err;
     var dbo = db.db("DataSensor");
     var havelo = {}
@@ -21,7 +21,7 @@ MongoClient.connect(url, { useNewUrlParser: true } ,function (err, db) {
             console.log(result[0].location[i].location)
             if (result[0].location.length > 0) {
                 //console.log("Scan")
-                MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
+                MongoClient.connect(url, function (err, db) {
                     if (err) throw err;
                     dbo.createCollection("A", function (err, res) {
                         if (err) throw err;

@@ -7,7 +7,7 @@ exports.go = function (req, res) {
         value.err = 'no filter'
     }
     else {
-        MongoClient.connect(url, { useNewUrlParser: true } ,async function (err, db) {
+        MongoClient.connect(url,async function (err, db) {
             if (err) throw err;
 
             var dbo = db.db("DataSensor");
