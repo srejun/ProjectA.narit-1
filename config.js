@@ -1,4 +1,4 @@
 var config = {}
 
-config.url = require("../config").url
+config.url = "mongodb://localhost:27017/"
 module.exports = config
