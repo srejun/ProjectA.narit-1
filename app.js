@@ -9,7 +9,7 @@ app.use(validator())
 app.use(cookieParser())
 app.use(bodyParser.json())
 app.use(cors({
-  origin:['http://pc.devinice.com:1112'],
+  origin:['http://pc.devinice.com:1111'],
   methods:['GET','POST'],
   credentials: true ,// enable set cookie
 }));
