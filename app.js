@@ -9,7 +9,7 @@ app.use(validator())
 app.use(cookieParser())
 app.use(bodyParser.json())
 app.use(cors({
-  origin:['http://localhost:8080'],
+  origin:['http://pc.devinice.com:1112'],
   methods:['GET','POST'],
   credentials: true ,// enable set cookie
 }));
@@ -60,7 +60,7 @@ app.post('/api/getDatas', getDatas.go)
 var newLocation = require('./tool/newLocation')
 app.post('/api/newLocation', newLocation.go)
 
-var getDatabyTime = require('./tool/getDatabyTime')
+var getDatabyTime = require('./tool/getDatabytime')
 app.post('/api/getDatabyTime', getDatabyTime.go)
 
 var getLocations = require('./tool/getLocations')
