@@ -1,5 +1,5 @@
 var MongoClient = require('mongodb').MongoClient
-var url = "mongodb://localhost:27017/"
+var url = require("../config").url
 exports.go = function (req, res) {
     var value = { confirm: false, err: '', data: null }
 
@@ -27,7 +27,8 @@ exports.go = function (req, res) {
                     time: []
                 }
                 var tmp_time = new Date(req.body['typedate'] + " " + "00:00:00 ").getTime()
-                var result = await dbo.collection(req.body['location']).find({ inBuilding: req.body['inBuilding'], date: tmp_time }).toArray()
+                const findkey = await dbo.collection("location").find({location: req.body['location']}).toArray() 
+                var result = await dbo.collection(findkey[0].key).find({ inBuilding: req.body['inBuilding'], date: tmp_time }).toArray()
                 if (result.length <= 0) {
                     value.err = 'no data'
                     console.log(value)

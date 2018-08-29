@@ -1,5 +1,5 @@
 var MongoClient = require('mongodb').MongoClient
-var url = "mongodb://localhost:27017/"
+var url = require("../config").url
 exports.go = function (req, res) {
     if (req.body['location'] === undefined || req.body['inBuilding'] === undefined || req.body['data'] === undefined) {
         res.end("ERROR")
@@ -44,42 +44,44 @@ exports.go = function (req, res) {
         newdata['date'] = alltime.getTime()
         newdata['data'] = [{ 'uv': req.body['data']['uv'], 'wind': req.body['data']['wind'], 'humidity': req.body['data']['humidity'], 'temperature': req.body['data']['temperature'], 'time': time }]
 
-        var datalo = {}
+        var keylocation = 1
         var newlo = {}
-        newlo['location']=req.body['location']
-        datalo = { location: req.body['location'] }
+        newlo['location'] = req.body['location']
+        //datalo = { location: req.body['location'] }
         var haslo = true
-        const find = await dbo.collection("location").find({datalo:newlo}).toArray()     //insert new location
+        const find = await dbo.collection("location").find({ location: req.body['location']}).toArray()     //insert new location
+        const findlengthlo = await dbo.collection("location").find({}).toArray() 
         //console.log("lo"+JSON.stringify(find[0].location))
         //console.log(data.location)
         //console.log(typeof(find.length))
         //console.log(find.hasOwnProperty(0))
         //console.log(find.length)
         if (find.hasOwnProperty(0) === true) {
+            
             for (var i = 0; i < find.length; i++) {
-                //console.log("infile" + find[0].datalo.location[i])
-                if (find[0].datalo.location[i] === datalo.location) {
+                //console.log("infile" + find[0].location[i])
+                if (find[0].location[i] === req.body['location']) {
                     haslo = false
                 }
             }
 
             if (haslo) {
-                dbo.collection("location").insertOne({ datalo }, function (err, res) {
-                    if (err) throw err;
-                    console.log("1 document update");
-                    db.close();
-                });
+                console.log("update "+findlengthlo.length)
+            keylocation=findlengthlo.length+1
+                var insertlo = await dbo.collection("location").insertOne({ location: req.body['location'],key:keylocation.toString() }) 
+                
             }
         }
         else {
-            dbo.collection("location").insertOne({ datalo }, function (err, res) {
-                if (err) throw err;
-                console.log("1 document insert");
-                db.close();
-            });
+            
+            console.log("insert "+findlengthlo.length)
+            keylocation=findlengthlo.length+1
+            var insertlo = await dbo.collection("location").insertOne({ location: req.body['location'] ,key:keylocation.toString()}) 
         }
+        const findkey = await dbo.collection("location").find({location: req.body['location']}).toArray() 
+        console.log("kloc"+findkey[0].key)
         //
-        var result = await dbo.collection(req.body['location']).find({ inBuilding: req.body['inBuilding'], date: newdata['date'] }).toArray()
+        var result = await dbo.collection(findkey[0].key).find({ inBuilding: req.body['inBuilding'], date: newdata['date'] }).toArray()
         /* if(result.length>0){
             console.log(result[0].date)
             console.log(checktime.getTime())
@@ -97,28 +99,24 @@ exports.go = function (req, res) {
             newdata['ave'] = [{ 'uv': aveuv, 'wind': avewind, 'humidity': avehumidity, 'temperature': avetem }]
             //console.log("uv"+aveuv+"wind"+avewind+"humidity"+avehumidity+"tem"+avetem)
 
-            MongoClient.connect(url, function (err, db) {
-                if (err) throw err;
-                var dbo = db.db("DataSensor");
-                var adddata = { $push: { data: newdata.data[0] }, $set: { ave: newdata.ave } }
-                dbo.collection(req.body['location']).update({ inBuilding: req.body['inBuilding'] }, adddata, function (err, res) {
-                    if (err) throw err;
-                    console.log("1 document update");
-                    db.close();
-                });
-            })
+
+            var dbo = db.db("DataSensor");
+            var adddata = { $push: { data: newdata.data[0] }, $set: { ave: newdata.ave } }
+            var updatedata = await dbo.collection(findkey[0].key).update({ inBuilding: req.body['inBuilding'] }, adddata)
+            console.log("1 document update");
+            //db.close();
+
+
         }
         else {
             newdata['ave'] = [{ 'uv': req.body['data']['uv'], 'wind': req.body['data']['wind'], 'humidity': req.body['data']['humidity'], 'temperature': req.body['data']['temperature'] }]
-            MongoClient.connect(url, function (err, db) {
-                if (err) throw err;
-                var dbo = db.db("DataSensor");
-                dbo.collection(req.body['location']).insertOne(newdata, function (err, res) {
-                    if (err) throw err;
-                    console.log("1 document insert");
-                    db.close();
-                });
-            })
+
+            var dbo = db.db("DataSensor");
+            var insertdata = await dbo.collection(findkey[0].key).insertOne(newdata)
+            console.log("1 document insert");
+            // db.close();
+
+
         }
         db.close();
 

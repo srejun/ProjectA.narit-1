@@ -1,5 +1,5 @@
 var MongoClient = require('mongodb').MongoClient
-var url = "mongodb://localhost:27017/"
+var url = require("../config").url
 exports.go = function (req, res) {
     var date = new Date()
     var value = { confirm: false, err: '', datas: [] }
@@ -15,8 +15,9 @@ exports.go = function (req, res) {
         else {
             var locations = await dbo.collection("location").find({}).project({ _id: 0 }).sort({ location: 1 }).toArray()
             for (var i = 0; i < locations.length; i++) {
-                var indoor = await dbo.collection(locations[i].location).find({ inBuilding: true }).project({ _id: 0, date: 1, data: 1 }).sort({ date: -1 }).toArray()
-                var outdoor = await dbo.collection(locations[i].location).find({ inBuilding: false }).project({ _id: 0, date: 1, data: 1 }).sort({ date: -1 }).toArray()
+                var findkey = await dbo.collection(locations[i].location).find({location: req.body['location']}).toArray()
+                var indoor = await dbo.collection(findkey[0].key).find({ inBuilding: true }).project({ _id: 0, date: 1, data: 1 }).sort({ date: -1 }).toArray()
+                var outdoor = await dbo.collection(findkey[0].key).find({ inBuilding: false }).project({ _id: 0, date: 1, data: 1 }).sort({ date: -1 }).toArray()
                 var data = {
                     location: locations[i].location, indoor: {
                         uv: 0,

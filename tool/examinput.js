@@ -1,11 +1,11 @@
 var MongoClient = require('mongodb').MongoClient
-var url = "mongodb://localhost:27017/"
+var url = require("../config").url
 exports.go = function (req, res) {
     if (req.body['location'] === undefined || req.body['inBuilding'] === undefined || req.body['data'] === undefined || req.body['date'] === undefined) {
         res.end("ERROR")
         throw ("ERROR")
     }
-    MongoClient.connect(url, function (err, db) {
+    MongoClient.connect(url,async function (err, db) {
         if (err) throw err;
         var dbo = db.db("DataSensor");
         var myobj = req.body
@@ -37,11 +37,11 @@ exports.go = function (req, res) {
         newdata['rate'] = 5
         newdata['date'] = alltime.getTime()
         var adddata
-        var find = "nodata"
-
-        dbo.collection(req.body['location']).find({ inBuilding: req.body['inBuilding'] }).toArray(function (err, result) {
-            if (err) throw err;
-            find = result.length
+        //var find = "nodata"
+        const find = await dbo.collection("location").find({ location: req.body['location']}).toArray()
+        var result = await dbo.collection(find[0].key).find({ inBuilding: req.body['inBuilding'] }).toArray() 
+            
+            //find = result.length
             //console.log(result.length)
             console.log("res" + result.length)
             timenow = result[result.length - 1].data[result[result.length - 1].data.length - 1].time
@@ -49,8 +49,7 @@ exports.go = function (req, res) {
             console.log("time" + datenow)
 
             if (result.length > 0) {
-                MongoClient.connect(url, function (err, db) {
-                    if (err) throw err;
+                
                     var dbo = db.db("DataSensor");
                     for (i = 0; i < 4000; i++) {
                         timenow = timenow + (30000)
@@ -74,20 +73,19 @@ exports.go = function (req, res) {
                         adddata = { $push: { data: newdata.data[0] }, $set: { ave: newdata.ave } }
                         if (timenow < checktime.getTime()) {
 
-                            dbo.collection(req.body['location']).update({ inBuilding: req.body['inBuilding'], date: datenow }, adddata, function (err, res) {
+                            var up = await dbo.collection(find[0].key).update({ inBuilding: req.body['inBuilding'], date: datenow }, adddata)
                                 if (err) throw err;
                                 console.log("1 document update");
-                                db.close();
-                            });
+                                
+                            
 
 
                         }
 
                     }
-                })
+                   
+                
             }
-
-        });
         // s
 
         //console.log(timenow)

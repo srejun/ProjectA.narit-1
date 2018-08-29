@@ -1,9 +1,10 @@
 var MongoClient = require('mongodb').MongoClient
-var url = "mongodb://localhost:27017/"
+var url = require("../config").url
 exports.go = function (req, res) {
     MongoClient.connect(url, async function (err, db) {
         if (err) throw err;
         var dbo = db.db("DataSensor");
+        var keylocation = 1
         var have_ses = await dbo.collection("Sessions").find({ session_id: req.sessionID, isAdmin: true }).toArray()
         var value = { confirm: false, err: '' }
         if (have_ses.length <= 0) {
@@ -11,8 +12,9 @@ exports.go = function (req, res) {
             res.end(JSON.stringify(value));
         }
         else {
-            dbo.collection("location").find({ location: req.body['location'] }).toArray(function (err, result) {
-                if (err) throw err;
+            var result = await dbo.collection("location").find({ location: req.body['location'] }).toArray()
+            const findlengthlo = await dbo.collection("location").find({}).toArray() 
+            keylocation=findlengthlo.length+1
                 if (result.length > 0) {
                     value.err = 'Same Collection!'
                     console.log("Same Collection!");
@@ -21,18 +23,18 @@ exports.go = function (req, res) {
                 else {
                     value.err = 'Same Collection!'
                     value.confirm = true;
-                    dbo.collection("location").insertOne({ location: req.body['location'] }, function (err, res) {
+                    dbo.collection("location").insertOne({ location: req.body['location'],key:keylocation.toString() }, function (err, res) {
                         if (err) throw err;
                         console.log("1 document inserted");
                     });
-                    dbo.createCollection(req.body['location'], function (err, res) {
+                    dbo.createCollection(keylocation.toString(), function (err, res) {
                         if (err) throw err;
                         console.log("Collection created!");
                         db.close();
                     });
                     res.end(JSON.stringify(value));
                 }
-            });
+            
         }
     });
 }
