@@ -78,7 +78,7 @@ app.post('/api/getYear', getYear.go)
 var getCustom = require('./tool/getCustom')
 app.post('/api/getCustom', getCustom.go)
 
-var examInput = require('./tool/examInput')
+var examInput = require('./tool/examinput')
 app.post('/api/examInput', examInput.go)
 
 var test = require('./tool/test')
