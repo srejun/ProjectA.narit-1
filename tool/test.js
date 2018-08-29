@@ -63,7 +63,7 @@ exports.go = function (req, res) {
             
             for (var i = 0; i < find.length; i++) {
                 //console.log("infile" + find[0].location[i])
-                if (find[0].location[i] === req.body['location']) {
+                if (find[0].location === req.body['location']) {
                     haslo = false
                 }
             }
