@@ -1,5 +1,5 @@
 var MongoClient = require('mongodb').MongoClient
-var url = require("../config").url
+var url = "mongodb://localhost:27017/"
 exports.go = function (req, res) {
     let myobj = {}
     if (req.body['location'] === undefined || req.body['inBuilding'] === undefined || req.body['ftime'] === undefined || req.body['ttime'] === undefined) {

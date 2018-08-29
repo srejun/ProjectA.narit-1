@@ -9,7 +9,7 @@ app.use(validator())
 app.use(cookieParser())
 app.use(bodyParser.json())
 app.use(cors({
-  origin:['http://pc.devinice.com:1112'],
+  origin:['http://localhost:8080'],
   methods:['GET','POST'],
   credentials: true ,// enable set cookie
 }));
@@ -39,7 +39,7 @@ app.post('/getUsers',getUsers.go )
 var setLogout=require('./tool/setLogout')
 app.post('/setLogout', setLogout.go);
 
-//
+
 ///login user&admin
 var setLogin=require('./tool/setLogin')
 app.post('/setLogin',setLogin.go)
@@ -60,7 +60,7 @@ app.post('/api/getDatas', getDatas.go)
 var newLocation = require('./tool/newLocation')
 app.post('/api/newLocation', newLocation.go)
 
-var getDatabyTime = require('./tool/getDatabytime')
+var getDatabyTime = require('./tool/getDatabyTime')
 app.post('/api/getDatabyTime', getDatabyTime.go)
 
 var getLocations = require('./tool/getLocations')
@@ -75,7 +75,10 @@ app.post('/api/getMonth', getMonth.go)
 var getYear = require('./tool/getYear')
 app.post('/api/getYear', getYear.go)
 
-var examInput = require('./tool/examinput')
+var getCustom = require('./tool/getCustom')
+app.post('/api/getCustom', getCustom.go)
+
+var examInput = require('./tool/examInput')
 app.post('/api/examInput', examInput.go)
 
 var test = require('./tool/test')
