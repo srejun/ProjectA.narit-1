@@ -1,7 +1,7 @@
 var MongoClient = require('mongodb').MongoClient
 var url = require("../config").url
 exports.go = function (req, res) {
-    var value = { confirm: false, err: '', data: null }
+    var value = { confirm: false, err: '', data: [] }
 
     if (req.body['location'] === undefined || req.body['inBuilding'] === undefined || req.body['typedate'] === undefined) {
         value.err = 'no filter'
@@ -31,6 +31,7 @@ exports.go = function (req, res) {
                 var result = await dbo.collection(findkey[0].key).find({ inBuilding: req.body['inBuilding'], date: tmp_time }).toArray()
                 if (result.length <= 0) {
                     value.err = 'no data'
+                    value.confirm = true
                     console.log(value)
                     res.end(JSON.stringify(value))
                 }
