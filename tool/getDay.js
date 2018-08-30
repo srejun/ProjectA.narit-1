@@ -30,6 +30,7 @@ exports.go = function (req, res) {
                 console.log(new Date(tmp_time).toLocaleString()+":"+tmp_time)
                 const findkey = await dbo.collection("location").find({location: req.body['location']}).toArray()
                 console.log(findkey)
+                console.log({ inBuilding: req.body['inBuilding'], date: tmp_time })
                 var result = await dbo.collection(findkey[0].key).find({ inBuilding: req.body['inBuilding'], date: tmp_time }).toArray()
                 if (result.length <= 0) {
                     value.err = 'no data'
