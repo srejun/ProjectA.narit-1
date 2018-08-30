@@ -15,9 +15,9 @@ exports.go = function (req, res) {
         else {
             var locations = await dbo.collection("location").find({}).project({ _id: 0 }).sort({ location: 1 }).toArray()
             for (var i = 0; i < locations.length; i++) {
-                var findkey = await dbo.collection("location").find({location: req.body['location']}).toArray()
-                var indoor = await dbo.collection(findkey[0].key).find({ inBuilding: true }).project({ _id: 0, date: 1, data: 1 }).sort({ date: -1 }).toArray()
-                var outdoor = await dbo.collection(findkey[0].key).find({ inBuilding: false }).project({ _id: 0, date: 1, data: 1 }).sort({ date: -1 }).toArray()
+                //var findkey = await dbo.collection("location").find({location: req.body['location']}).toArray()
+                var indoor = await dbo.collection(locations[i].key).find({ inBuilding: true }).project({ _id: 0, date: 1, data: 1 }).sort({ date: -1 }).toArray()
+                var outdoor = await dbo.collection(locations[i].key).find({ inBuilding: false }).project({ _id: 0, date: 1, data: 1 }).sort({ date: -1 }).toArray()
                 var data = {
                     location: locations[i].location, indoor: {
                         uv: 0,
