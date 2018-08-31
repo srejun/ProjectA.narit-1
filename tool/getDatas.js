@@ -13,11 +13,11 @@ exports.go = function (req, res) {
             res.end(JSON.stringify(value))
         }
         else {
-            var locations = await dbo.collection("location").find({}).project({ _id: 0 }).sort({ location: 1 }).toArray()
+            var locations = await dbo.collection("location").find({}).project({ _id: 0 }).toArray()
             for (var i = 0; i < locations.length; i++) {
                 //var findkey = await dbo.collection("location").find({location: req.body['location']}).toArray()
-                var indoor = await dbo.collection(locations[i].key).find({ inBuilding: true }).project({ _id: 0, date: 1, data: 1 }).sort({ date: -1 }).toArray()
-                var outdoor = await dbo.collection(locations[i].key).find({ inBuilding: false }).project({ _id: 0, date: 1, data: 1 }).sort({ date: -1 }).toArray()
+                var indoor = await dbo.collection(locations[i].key).find({ inBuilding: true }).project({ _id: 0,data: 1 }).toArray()
+                var outdoor = await dbo.collection(locations[i].key).find({ inBuilding: false }).project({ _id: 0,data: 1 }).toArray()
                 var data = {
                     location: locations[i].location, indoor: {
                         uv: 0,
@@ -37,7 +37,7 @@ exports.go = function (req, res) {
                 }
 
                 if (indoor.length > 0) {
-                    data.indoor = indoor[0].data[indoor[0].data.length - 1]
+                    data.indoor = indoor[indoor.length-1].data[indoor[indoor.length-1].data.length - 1]
                     if (data.indoor.humidity > 75) data.indoor.flag = 'dark'
                     else if (data.indoor.humidity > 70) data.indoor.flag = 'danger'
                     else if (data.indoor.humidity > 65) data.indoor.flag = 'warning'
@@ -45,7 +45,7 @@ exports.go = function (req, res) {
                     else if (data.indoor.humidity > 55) data.indoor.flag = 'ligth'
                 }
                 if (outdoor.length > 0) {
-                    data.outdoor = outdoor[0].data[outdoor[0].data.length - 1]
+                    data.outdoor = outdoor[outdoor.length-1].data[outdoor[outdoor.length-1].data.length - 1]
                     if (data.outdoor.humidity > 75) data.outdoor.flag = 'dark'
                     else if (data.outdoor.humidity > 70) data.outdoor.flag = 'danger'
                     else if (data.outdoor.humidity > 65) data.outdoor.flag = 'warning'
