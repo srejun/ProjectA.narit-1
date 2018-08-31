@@ -10,7 +10,7 @@ exports.go = function (req, res) {
         var have_ses = await dbo.collection("Sessions").find({ session_id: req.sessionID }).toArray()
 
         if (have_ses.length > 0){
-            value.locations = await dbo.collection("location").find({}).project({ _id: 0}).sort({ location: 1 }).toArray()
+            value.locations = await dbo.collection("location").find({}).toArray()
             value.confirm = true
         }
         res.end(JSON.stringify(value))

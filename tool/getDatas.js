@@ -13,11 +13,11 @@ exports.go = function (req, res) {
             res.end(JSON.stringify(value))
         }
         else {
-            var locations = await dbo.collection("location").find({}).project({ _id: 0 }).toArray()
+            var locations = await dbo.collection("location").find({}).toArray()
             for (var i = 0; i < locations.length; i++) {
                 //var findkey = await dbo.collection("location").find({location: req.body['location']}).toArray()
-                var indoor = await dbo.collection(locations[i].key).find({ inBuilding: true }).project({ _id: 0,data: 1 }).toArray()
-                var outdoor = await dbo.collection(locations[i].key).find({ inBuilding: false }).project({ _id: 0,data: 1 }).toArray()
+                var indoor = await dbo.collection(locations[i].key).find({ inBuilding: true }).toArray()
+                var outdoor = await dbo.collection(locations[i].key).find({ inBuilding: false }).toArray()
                 var data = {
                     location: locations[i].location, indoor: {
                         uv: 0,
