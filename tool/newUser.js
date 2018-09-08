@@ -11,8 +11,6 @@ exports.go = async function (req, res) {
   var have_ses = null
   var have_use = null
 
-
-
   req.checkBody('name', 'name Must have not Empty').isEmpty
   req.checkBody('email').isEmpty
   req.checkBody('email').isEmail
@@ -54,8 +52,4 @@ exports.go = async function (req, res) {
       }
     }
   })
-
-
-
-
 }
