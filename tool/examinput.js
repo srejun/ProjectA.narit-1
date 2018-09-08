@@ -53,7 +53,7 @@ exports.go = function (req, res) {
             for (i = 0; i < 4000; i++) {
                 timenow = timenow + (300000)
                 changdata['data'] = { 'uv': req.body['data']['uv'] + Math.floor(Math.random() * 45) + 1, 'wind': req.body['data']['wind']+ Math.floor(Math.random() * 45) + 1, 'humidity': req.body['data']['humidity']+ Math.floor(Math.random() * 45) + 1, 'temperature': req.body['data']['temperature']+ Math.floor(Math.random() * 45) + 1}
-<<<<<<< HEAD
+
                 //req.body['data']['uv'] = req.body['data']['uv'] + Math.floor(Math.random() * 50) + 1
                 //req.body['data']['wind'] = req.body['data']['wind'] + Math.floor(Math.random() * 50) + 1
                 //req.body['data']['humidity'] = req.body['data']['humidity'] + Math.floor(Math.random() * 50) + 1
@@ -70,7 +70,7 @@ exports.go = function (req, res) {
                     currentdata['data'] = [{ inBuilding: req.body['inBuilding'], 'uv': req.body['data']['uv'], 'wind': req.body['data']['wind'], 'humidity': req.body['data']['humidity'], 'temperature': req.body['data']['temperature'], 'time': time}]
                 }
                 newdata['data'] = [{ 'uv': changdata['data']['uv'], 'wind': changdata['data']['wind'], 'humidity': changdata['data']['humidity'], 'temperature': changdata['data']['temperature'], 'time': timenow }]
-=======
+
 
                 if (changdata['data']['humidity'] > 75) currentdata['data'] = [{ inBuilding: changdata['inBuilding'], 'uv': changdata['data']['uv'], 'wind': changdata['data']['wind'], 'humidity': changdata['data']['humidity'], 'temperature': changdata['data']['temperature'], 'time': time, 'flag': 'dark' }]
                 else if (changdata['data']['humidity'] > 70) currentdata['data'] = [{ inBuilding: req.body['inBuilding'], 'uv': changdata['data']['uv'], 'wind': changdata['data']['wind'], 'humidity': changdata['data']['humidity'], 'temperature': changdata['data']['temperature'], 'time': time, 'flag': 'danger' }]
@@ -79,7 +79,7 @@ exports.go = function (req, res) {
                 else if (changdata['data']['humidity'] >= 55) currentdata['data'] = [{ inBuilding: req.body['inBuilding'], 'uv': changdata['data']['uv'], 'wind': changdata['data']['wind'], 'humidity': changdata['data']['humidity'], 'temperature': changdata['data']['temperature'], 'time': time, 'flag': 'light' }]
                 
                 newdata['data'] = [{ 'uv': changdata['data']['uv'], 'wind': changdata['data']['wind'], 'humidity': changdata['data']['humidity'], 'temperature': changdata['data']['temperature'], 'time': timenow }]               
->>>>>>> master
+
                 aveuv = ((result[0].data.length * result[0].ave[0].uv) + newdata.data[0].uv) / (result[0].data.length + 1)
                 avewind = ((result[0].data.length * result[0].ave[0].wind) + newdata.data[0].wind) / (result[0].data.length + 1)
                 avehumidity = ((result[0].data.length * result[0].ave[0].humidity) + newdata.data[0].humidity) / (result[0].data.length + 1)
