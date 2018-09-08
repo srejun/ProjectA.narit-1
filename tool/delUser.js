@@ -19,7 +19,8 @@ exports.go = function (req, res) {
   req.checkBody('name').isEmpty
   const errorValidate = req.validationErrors();
   if (errorValidate) {
-    console.log(JSON.stringify(errorValidate)), res.end(JSON.stringify(value))
+    console.log(JSON.stringify(errorValidate))
+    res.end(JSON.stringify(value))
   }
   MongoClient.connect(url, async function (err, db) {
     if (err) throw err;
@@ -27,8 +28,12 @@ exports.go = function (req, res) {
     have_ses = await dbo.collection(col_ses).find({ session_id: req.sessionID, isAdmin: true }).toArray()
     have_use = await dbo.collection(col_user).find(myobj).toArray()
     if (have_ses.length > 0) {
-      if (have_ses[0].email == myobj.email) { value.confirm = false, value.err = 'del your self' } else {
-        console.log('delete user form col_ses,col_use'), value.confirm = true
+      if (have_ses[0].email == myobj.email) {
+        value.confirm = false
+        value.err = 'del your self'
+      }
+      else {
+        value.confirm = true
         await dbo.collection(col_ses).deleteMany(
           { name: myobj.name, email: myobj.email }
         )
@@ -38,7 +43,7 @@ exports.go = function (req, res) {
     else if (have_ses.length <= 0) { value.confirm = false, value.err = "สำหรับแอดมินเท่านั้น", console.log('not admin') }
     else if (have_use.length <= 0) { value.confirm = false, value.err = 'ไม่มีผู้ใช้นี้ในระบบ', console.log('No user in DB') }
 
-    console.log("value=" + JSON.stringify(value) + JSON.stringify(req.session.cookie.expires) + JSON.stringify(req.sessionID))
+    console.log(value)
     res.end(JSON.stringify(value))
     db.close()
   })
