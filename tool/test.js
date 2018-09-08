@@ -48,11 +48,11 @@ exports.go = function (req, res) {
         newdata['rate'] = 5
         newdata['date'] = alltime.getTime()
         //currentdata['data'] = [{ inBuilding: req.body['inBuilding'], 'uv': req.body['data']['uv'], 'wind': req.body['data']['wind'], 'humidity': req.body['data']['humidity'], 'temperature': req.body['data']['temperature'], 'time': time }]
-        if (req.body['data']['humidity'] > 75) currentdata['data'] = [{ inBuilding: req.body['inBuilding'], 'uv': req.body['data']['uv'], 'wind': req.body['data']['wind'], 'humidity': req.body['data']['humidity'], 'temperature': req.body['data']['temperature'], 'time': time ,'flag':'dark'}]
-        else if (req.body['data']['humidity'] > 70) currentdata['data'] = [{ inBuilding: req.body['inBuilding'], 'uv': req.body['data']['uv'], 'wind': req.body['data']['wind'], 'humidity': req.body['data']['humidity'], 'temperature': req.body['data']['temperature'], 'time': time ,'flag':'danger'}]
-        else if (req.body['data']['humidity'] > 65) currentdata['data'] = [{ inBuilding: req.body['inBuilding'], 'uv': req.body['data']['uv'], 'wind': req.body['data']['wind'], 'humidity': req.body['data']['humidity'], 'temperature': req.body['data']['temperature'], 'time': time ,'flag':'warning'}]
-        else if (req.body['data']['humidity'] > 60) currentdata['data'] = [{ inBuilding: req.body['inBuilding'], 'uv': req.body['data']['uv'], 'wind': req.body['data']['wind'], 'humidity': req.body['data']['humidity'], 'temperature': req.body['data']['temperature'], 'time': time ,'flag':'success'}]
-        else if (req.body['data']['humidity'] > 55) currentdata['data'] = [{ inBuilding: req.body['inBuilding'], 'uv': req.body['data']['uv'], 'wind': req.body['data']['wind'], 'humidity': req.body['data']['humidity'], 'temperature': req.body['data']['temperature'], 'time': time ,'flag':'light'}]
+        if (req.body['data']['humidity'] >= 75) currentdata['data'] = [{ inBuilding: req.body['inBuilding'], 'uv': req.body['data']['uv'], 'wind': req.body['data']['wind'], 'humidity': req.body['data']['humidity'], 'temperature': req.body['data']['temperature'], 'time': time ,'flag':'dark'}]
+        else if (req.body['data']['humidity'] >= 70) currentdata['data'] = [{ inBuilding: req.body['inBuilding'], 'uv': req.body['data']['uv'], 'wind': req.body['data']['wind'], 'humidity': req.body['data']['humidity'], 'temperature': req.body['data']['temperature'], 'time': time ,'flag':'danger'}]
+        else if (req.body['data']['humidity'] >= 65) currentdata['data'] = [{ inBuilding: req.body['inBuilding'], 'uv': req.body['data']['uv'], 'wind': req.body['data']['wind'], 'humidity': req.body['data']['humidity'], 'temperature': req.body['data']['temperature'], 'time': time ,'flag':'warning'}]
+        else if (req.body['data']['humidity'] >= 60) currentdata['data'] = [{ inBuilding: req.body['inBuilding'], 'uv': req.body['data']['uv'], 'wind': req.body['data']['wind'], 'humidity': req.body['data']['humidity'], 'temperature': req.body['data']['temperature'], 'time': time ,'flag':'success'}]
+        else if (req.body['data']['humidity'] >= 55) currentdata['data'] = [{ inBuilding: req.body['inBuilding'], 'uv': req.body['data']['uv'], 'wind': req.body['data']['wind'], 'humidity': req.body['data']['humidity'], 'temperature': req.body['data']['temperature'], 'time': time ,'flag':'light'}]
         newdata['data'] = [{ 'uv': req.body['data']['uv'], 'wind': req.body['data']['wind'], 'humidity': req.body['data']['humidity'], 'temperature': req.body['data']['temperature'], 'time': time }]
 
         var keylocation = 1
@@ -67,10 +67,14 @@ exports.go = function (req, res) {
         //console.log(data.location)
         //console.log(typeof(find.length))
         //console.log(find.hasOwnProperty(0))
+        // var profits=2489.8237
+        // console.log(profits.toFixed( 3 )) //returns 2489.824 (ปัดขึ้น)
+        // console.log(profits.toFixed( 2 )) //returns 2489.82
         console.log(req.body['inBuilding'])
-        console.log(find.length)
+        //console.log(find.length)
+        //console.log(JSON.stringify(currentdata))
         if (find.hasOwnProperty(0) === true) {
-
+            //console.log(find.length)
             if (find[0].location === req.body['location']) {
                 haslo = false
                 var indexlo = 0
@@ -79,10 +83,10 @@ exports.go = function (req, res) {
                 //console.log("update "+findlengthlo.length)
                 keylocation = findlengthlo.length + 1
                 if (req.body['inBuilding'] === true) {
-                    var insertloin = await dbo.collection("location").insertOne({ location: req.body['location'], key: keylocation.toString(), indoor: currentdata.data[0] })
+                    await dbo.collection("location").insertOne({ location: req.body['location'], key: keylocation.toString(), indoor: currentdata.data[0] })
                 }
                 else {
-                    var insertloin = await dbo.collection("location").insertOne({ location: req.body['location'], key: keylocation.toString(), outdoor: currentdata.data[0] })
+                    await dbo.collection("location").insertOne({ location: req.body['location'], key: keylocation.toString(), outdoor: currentdata.data[0] })
                 }
 
 
@@ -91,11 +95,11 @@ exports.go = function (req, res) {
                 if (req.body['inBuilding'] === true) {
                     var updatecurrentdata = { $set: { indoor: currentdata.data[0] } }
 
-                    var updatesertloaddin = await dbo.collection("location").updateOne({ location: find[indexlo].location }, updatecurrentdata)
+                    await dbo.collection("location").updateOne({ location: find[indexlo].location }, updatecurrentdata)
                 }
                 else {
                     var updatecurrentdata = { $set: { outdoor: currentdata.data[0] } }
-                    var updatesertloaddout = await dbo.collection("location").updateOne({ location: find[indexlo].location }, updatecurrentdata)
+                    await dbo.collection("location").updateOne({ location: find[indexlo].location }, updatecurrentdata)
                 }
 
                 //console.log("updatelo")
@@ -105,12 +109,13 @@ exports.go = function (req, res) {
         else {
 
             //console.log("insert "+findlengthlo.length)
+            //console.log(currentdata)
             keylocation = findlengthlo.length + 1
             if (req.body['inBuilding'] === true) {
-                var insertloin = await dbo.collection("location").insertOne({ location: req.body['location'], key: keylocation.toString(), indoor: currentdata.data[0] })
+                await dbo.collection("location").insertOne({ location: req.body['location'], key: keylocation.toString(), indoor: currentdata.data[0] })
             }
             else {
-                var insertloout = await dbo.collection("location").insertOne({ location: req.body['location'], key: keylocation.toString(), outdoor: currentdata.data[0] })
+                await dbo.collection("location").insertOne({ location: req.body['location'], key: keylocation.toString(), outdoor: currentdata.data[0] })
             }
         }
 
@@ -132,14 +137,14 @@ exports.go = function (req, res) {
             avewind = ((result[0].data.length * result[0].ave[0].wind) + newdata.data[0].wind) / (result[0].data.length + 1)
             avehumidity = ((result[0].data.length * result[0].ave[0].humidity) + newdata.data[0].humidity) / (result[0].data.length + 1)
             avetem = ((result[0].data.length * result[0].ave[0].temperature) + newdata.data[0].temperature) / (result[0].data.length + 1)
-            newdata['ave'] = [{ 'uv': aveuv, 'wind': avewind, 'humidity': avehumidity, 'temperature': avetem }]
+            newdata['ave'] = [{ 'uv': aveuv.toFixed(2), 'wind': avewind.toFixed(2), 'humidity': avehumidity.toFixed(2), 'temperature': avetem.toFixed(2) }]
             //console.log("uv"+aveuv+"wind"+avewind+"humidity"+avehumidity+"tem"+avetem)
 
 
             var dbo = db.db("DataSensor");
             var adddata = { $push: { data: newdata.data[0] }, $set: { ave: newdata.ave } }
-            var updatedata = await dbo.collection(findkey[0].key).update({ inBuilding: req.body['inBuilding'] }, adddata)
-            //console.log("1 document update");
+            await dbo.collection(findkey[0].key).update({ inBuilding: req.body['inBuilding'] }, adddata)
+            console.log("1 document update");
             //db.close();
 
 
@@ -148,8 +153,8 @@ exports.go = function (req, res) {
             newdata['ave'] = [{ 'uv': req.body['data']['uv'], 'wind': req.body['data']['wind'], 'humidity': req.body['data']['humidity'], 'temperature': req.body['data']['temperature'] }]
 
             var dbo = db.db("DataSensor");
-            var insertdata = await dbo.collection(findkey[0].key).insertOne(newdata)
-            //console.log("1 document insert");
+            await dbo.collection(findkey[0].key).insertOne(newdata)
+            console.log("1 document insert");
             // db.close();
 
 
