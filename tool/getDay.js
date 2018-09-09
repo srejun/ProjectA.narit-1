@@ -31,10 +31,9 @@ exports.go = function (req, res) {
                 const findkey = await dbo.collection("location").find({location: req.body['location']}).toArray()
                 console.log(findkey)
                 console.log({ inBuilding: req.body['inBuilding'], date: tmp_time })
-                var result = await dbo.collection(findkey[0].key).find({ inBuilding: req.body['inBuilding'], date: tmp_time-25200000 }).toArray()
+                var result = await dbo.collection(findkey[0].key).find({ inBuilding: req.body['inBuilding'], date: tmp_time }).toArray()
                 if (result.length <= 0) {
                     value.err = 'no data'
-                    value.confirm = true
                     console.log(value)
                     res.end(JSON.stringify(value))
                 }

@@ -1,9 +1,7 @@
 var MongoClient = require('mongodb').MongoClient
 var url = require("../config").url
 exports.go = function (req, res) {
-    var date = new Date()
     var value = { confirm: false, err: '', datas: [] }
-    var datas = []
 
     MongoClient.connect(url, async function (err, db) {
         if (err) throw err;
@@ -13,20 +11,29 @@ exports.go = function (req, res) {
             res.end(JSON.stringify(value))
         }
         else {
-            var locations = await dbo.collection("location").find({}).toArray()
-            for (var i = 0; i < locations.length; i++) {
-                //var findkey = await dbo.collection("location").find({location: req.body['location']}).toArray()
-                var indoor = await dbo.collection(locations[i].key).find({ inBuilding: true }).toArray()
-                var outdoor = await dbo.collection(locations[i].key).find({ inBuilding: false }).toArray()
-                var data = {
-                    location: locations[i].location, indoor: {
+            var datas = await dbo.collection("location").find({}).toArray()
+
+            value.datas = datas.map(function (obj) {
+                var new_obj = {}
+                new_obj.location = obj.location
+
+                if (obj.indoor === undefined) {
+                new_obj.key = obj.key
+                    new_obj.indoor = {
                         uv: 0,
                         temperature: 0,
                         humidity: 0,
                         wind: 0,
                         time: null,
                         flag: null
-                    }, outdoor: {
+                    }
+                }
+                else {
+                    new_obj.indoor = obj.indoor
+                }
+
+                if (obj.outdoor === undefined) {
+                    new_obj.outdoor = {
                         uv: 0,
                         temperature: 0,
                         humidity: 0,
@@ -37,7 +44,7 @@ exports.go = function (req, res) {
                 }
 
                 if (indoor.length > 0) {
-                    data.indoor = indoor[indoor.length-1].data[indoor[indoor.length-1].data.length - 1]
+                    data.indoor = indoor[0].data[indoor[0].data.length - 1]
                     if (data.indoor.humidity > 75) data.indoor.flag = 'dark'
                     else if (data.indoor.humidity > 70) data.indoor.flag = 'danger'
                     else if (data.indoor.humidity > 65) data.indoor.flag = 'warning'
@@ -45,7 +52,7 @@ exports.go = function (req, res) {
                     else if (data.indoor.humidity > 55) data.indoor.flag = 'ligth'
                 }
                 if (outdoor.length > 0) {
-                    data.outdoor = outdoor[outdoor.length-1].data[outdoor[outdoor.length-1].data.length - 1]
+                    data.outdoor = outdoor[0].data[outdoor[0].data.length - 1]
                     if (data.outdoor.humidity > 75) data.outdoor.flag = 'dark'
                     else if (data.outdoor.humidity > 70) data.outdoor.flag = 'danger'
                     else if (data.outdoor.humidity > 65) data.outdoor.flag = 'warning'
@@ -53,13 +60,13 @@ exports.go = function (req, res) {
                     else if (data.outdoor.humidity > 55) data.outdoor.flag = 'ligth'
                 }
 
-                datas.push(data)
-            }
+                return new_obj
+            });
+
             value.confirm = true
-            value.datas = datas
+            console.log(value)
             res.end(JSON.stringify(value))
         }
         db.close();
-
     });
 }

@@ -19,7 +19,8 @@ exports.go = function (req, res) {
     req.checkBody('PASS', 'Password is Empty doit again').isEmpty
     const errorValidate = req.validationErrors();
     if (errorValidate) {
-        console.log(JSON.stringify(errorValidate)), res.end(JSON.stringify(value))
+        console.log(JSON.stringify(errorValidate))
+        res.end(JSON.stringify(value))
     }
     MongoClient.connect(url, async function (err, db) {
         if (err) throw err;
@@ -28,14 +29,20 @@ exports.go = function (req, res) {
         have_ses = await dbo.collection(col_ses).find({ session_id: String(req.sessionID) }).toArray()
         have_use = await dbo.collection(col_user).find(myobj).toArray()
         myobj.PASS = req.body.PASS
+        
         if (have_use.length > 0) {
             myobj.isAdmin = have_use[0].isAdmin
             math = await bcrypt.compare(myobj.PASS, have_use[0].PASS)
         }
         if (math && have_use.length > 0) { login = true }
         if (login && have_ses.length <= 0) {
-            value.name = have_use[0].name, value.isAdmin = have_use[0].isAdmin, value.confirm = true
-            dbo.collection(col_ses).insertOne({ "session_id": req.sessionID, isAdmin: have_use[0].isAdmin, name: have_use[0].name, email: have_use[0].email, createdAt:new Date() }, function (err, result) { console.log('welcom user' + JSON.stringify(value) + req.sessionID) })
+            value.name = have_use[0].name
+            value.isAdmin = have_use[0].isAdmin
+            value.confirm = true
+            now = new Date(Date.now())
+
+            time = 'hh:' + now.getHours() + ' mm:' + now.getMinutes() + ' ss:' + now.getSeconds()
+            dbo.collection(col_ses).insertOne({ "session_id": req.sessionID, isAdmin: have_use[0].isAdmin, name: have_use[0].name, email: have_use[0].email, createdAt:new Date() }, function (err, result) { console.log('welcom user' + JSON.stringify(value) + req.sessionID) }) 
         }
         else if (have_ses.length > 0 && login) {
             console.log('have session of ' + have_use[0].name) + "login now"
@@ -45,7 +52,7 @@ exports.go = function (req, res) {
             console.log("not same pass or user" + JSON.stringify(req.body.email + req.body.PASS))
             value.err = "login failed"
         }
-        console.log("value=" + JSON.stringify(value));
+        console.log("value=" + JSON.stringify(value)); 
         res.end(JSON.stringify(value))
         db.close()
     })

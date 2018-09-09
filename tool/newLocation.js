@@ -9,6 +9,7 @@ exports.go = function (req, res) {
         var value = { confirm: false, err: '' }
         if (have_ses.length <= 0) {
             value.err = 'permission denied'
+            console.log(value);
             res.end(JSON.stringify(value));
         }
         else {
@@ -17,11 +18,10 @@ exports.go = function (req, res) {
             keylocation=findlengthlo.length+1
                 if (result.length > 0) {
                     value.err = 'Same Collection!'
-                    console.log("Same Collection!");
+                    console.log(value);
                     res.end(JSON.stringify(value));
                 }
                 else {
-                    value.err = 'Same Collection!'
                     value.confirm = true;
                     dbo.collection("location").insertOne({ location: req.body['location'],key:keylocation.toString() }, function (err, res) {
                         if (err) throw err;
@@ -32,6 +32,7 @@ exports.go = function (req, res) {
                         console.log("Collection created!");
                         db.close();
                     });
+                    console.log(value);
                     res.end(JSON.stringify(value));
                 }
             
