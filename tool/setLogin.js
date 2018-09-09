@@ -14,6 +14,9 @@ exports.go = function (req, res) {
     var have_use = null
     var math = null
     var login = null
+    var hour = 3 * 60 * 60 * 1000
+    req.session.cookie.expires = new Date(Date.now() + hour)
+    req.session.cookie.maxAge = hour
     req.checkBody('email').isEmpty
     req.checkBody('email').isEmail
     req.checkBody('PASS', 'Password is Empty doit again').isEmpty
@@ -39,8 +42,8 @@ exports.go = function (req, res) {
             value.name = have_use[0].name
             value.isAdmin = have_use[0].isAdmin
             value.confirm = true
-            now = new Date(Date.now())
 
+            now = new Date(Date.now())
             time = 'hh:' + now.getHours() + ' mm:' + now.getMinutes() + ' ss:' + now.getSeconds()
             dbo.collection(col_ses).insertOne({ "session_id": req.sessionID, isAdmin: have_use[0].isAdmin, name: have_use[0].name, email: have_use[0].email, createdAt:new Date() }, function (err, result) { console.log('welcom user' + JSON.stringify(value) + req.sessionID) }) 
         }
@@ -52,6 +55,7 @@ exports.go = function (req, res) {
             console.log("not same pass or user" + JSON.stringify(req.body.email + req.body.PASS))
             value.err = "login failed"
         }
+        
         console.log("value=" + JSON.stringify(value)); 
         res.end(JSON.stringify(value))
         db.close()
