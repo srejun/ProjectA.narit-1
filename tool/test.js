@@ -12,10 +12,6 @@ exports.go = function (req, res) {
         var date = new Date()
         myobj['data'].time = time
 
-        var hour = date.getHours()
-        var minute = date.getMinutes()
-        var second = date.getSeconds()
-
         var alltime = new Date(req.body['date'])
         var year = alltime.getFullYear()
         var month = alltime.getMonth()
@@ -23,12 +19,14 @@ exports.go = function (req, res) {
         var sum = year + "/" + (month + 1) + "/" + (day + 1)
         var checktime = new Date(sum)
         var time = new Date(alltime).getTime()
+        console.log(alltime)
+        console.log(time)
 
         if (req.body['data']['uv'] === undefined) { req.body['data']['uv'] = 0 }
         if (req.body['data']['wind'] === undefined) { req.body['data']['wind'] = 0 }
         if (req.body['data']['humidity'] === undefined) { req.body['data']['humidity'] = 0 }
         if (req.body['data']['temperature'] === undefined) { req.body['data']['temperature'] = 0 }
-        
+
         var aveuv = null
         var avewind = null
         var avehumidity = null
@@ -40,26 +38,17 @@ exports.go = function (req, res) {
         newdata['rate'] = 5
         newdata['date'] = alltime.getTime()
 
-        //currentdata['data'] = [{ inBuilding: req.body['inBuilding'], 'uv': req.body['data']['uv'], 'wind': req.body['data']['wind'], 'humidity': req.body['data']['humidity'], 'temperature': req.body['data']['temperature'], 'time': time }]
         if (req.body['inBuilding']) {
-            if (req.body['data']['humidity'] >= 75) currentdata['data'] = [{ inBuilding: req.body['inBuilding'], 'uv': req.body['data']['uv'], 'wind': req.body['data']['wind'], 'humidity': req.body['data']['humidity'], 'temperature': req.body['data']['temperature'], 'time': time, 'flag': 'dark' }]
-            else if (req.body['data']['humidity'] >= 70) currentdata['data'] = [{ inBuilding: req.body['inBuilding'], 'uv': req.body['data']['uv'], 'wind': req.body['data']['wind'], 'humidity': req.body['data']['humidity'], 'temperature': req.body['data']['temperature'], 'time': time, 'flag': 'danger' }]
-            else if (req.body['data']['humidity'] >= 65) currentdata['data'] = [{ inBuilding: req.body['inBuilding'], 'uv': req.body['data']['uv'], 'wind': req.body['data']['wind'], 'humidity': req.body['data']['humidity'], 'temperature': req.body['data']['temperature'], 'time': time, 'flag': 'warning' }]
-            else if (req.body['data']['humidity'] >= 60) currentdata['data'] = [{ inBuilding: req.body['inBuilding'], 'uv': req.body['data']['uv'], 'wind': req.body['data']['wind'], 'humidity': req.body['data']['humidity'], 'temperature': req.body['data']['temperature'], 'time': time, 'flag': 'success' }]
-            else if (req.body['data']['humidity'] >= 55) currentdata['data'] = [{ inBuilding: req.body['inBuilding'], 'uv': req.body['data']['uv'], 'wind': req.body['data']['wind'], 'humidity': req.body['data']['humidity'], 'temperature': req.body['data']['temperature'], 'time': time, 'flag': 'light' }]
+            if (req.body['data']['humidity'] > 75) currentdata['data'] = [{ inBuilding: req.body['inBuilding'], 'uv': req.body['data']['uv'], 'wind': req.body['data']['wind'], 'humidity': req.body['data']['humidity'], 'temperature': req.body['data']['temperature'], 'time': time, 'flag': 'dark' }]
+            else if (req.body['data']['humidity'] > 70) currentdata['data'] = [{ inBuilding: req.body['inBuilding'], 'uv': req.body['data']['uv'], 'wind': req.body['data']['wind'], 'humidity': req.body['data']['humidity'], 'temperature': req.body['data']['temperature'], 'time': time, 'flag': 'danger' }]
+            else if (req.body['data']['humidity'] > 65) currentdata['data'] = [{ inBuilding: req.body['inBuilding'], 'uv': req.body['data']['uv'], 'wind': req.body['data']['wind'], 'humidity': req.body['data']['humidity'], 'temperature': req.body['data']['temperature'], 'time': time, 'flag': 'warning' }]
+            else if (req.body['data']['humidity'] > 60) currentdata['data'] = [{ inBuilding: req.body['inBuilding'], 'uv': req.body['data']['uv'], 'wind': req.body['data']['wind'], 'humidity': req.body['data']['humidity'], 'temperature': req.body['data']['temperature'], 'time': time, 'flag': 'success' }]
+            else currentdata['data'] = [{ inBuilding: req.body['inBuilding'], 'uv': req.body['data']['uv'], 'wind': req.body['data']['wind'], 'humidity': req.body['data']['humidity'], 'temperature': req.body['data']['temperature'], 'time': time, 'flag': 'light' }]
         }
         else{
             currentdata['data'] = [{ inBuilding: req.body['inBuilding'], 'uv': req.body['data']['uv'], 'wind': req.body['data']['wind'], 'humidity': req.body['data']['humidity'], 'temperature': req.body['data']['temperature'], 'time': time}]
         }
-
-       
-        if (req.body['data']['humidity'] > 75) currentdata['data'] = [{ inBuilding: req.body['inBuilding'], 'uv': req.body['data']['uv'], 'wind': req.body['data']['wind'], 'humidity': req.body['data']['humidity'], 'temperature': req.body['data']['temperature'], 'time': time ,'flag':'dark'}]
-        else if (req.body['data']['humidity'] > 70) currentdata['data'] = [{ inBuilding: req.body['inBuilding'], 'uv': req.body['data']['uv'], 'wind': req.body['data']['wind'], 'humidity': req.body['data']['humidity'], 'temperature': req.body['data']['temperature'], 'time': time ,'flag':'danger'}]
-        else if (req.body['data']['humidity'] > 65) currentdata['data'] = [{ inBuilding: req.body['inBuilding'], 'uv': req.body['data']['uv'], 'wind': req.body['data']['wind'], 'humidity': req.body['data']['humidity'], 'temperature': req.body['data']['temperature'], 'time': time ,'flag':'warning'}]
-        else if (req.body['data']['humidity'] > 60) currentdata['data'] = [{ inBuilding: req.body['inBuilding'], 'uv': req.body['data']['uv'], 'wind': req.body['data']['wind'], 'humidity': req.body['data']['humidity'], 'temperature': req.body['data']['temperature'], 'time': time ,'flag':'success'}]
-        else if (req.body['data']['humidity'] >= 55) currentdata['data'] = [{ inBuilding: req.body['inBuilding'], 'uv': req.body['data']['uv'], 'wind': req.body['data']['wind'], 'humidity': req.body['data']['humidity'], 'temperature': req.body['data']['temperature'], 'time': time ,'flag':'light'}]
         newdata['data'] = [{ 'uv': req.body['data']['uv'], 'wind': req.body['data']['wind'], 'humidity': req.body['data']['humidity'], 'temperature': req.body['data']['temperature'], 'time': time }]
-
 
         var keylocation = 1
         var newlo = {}
@@ -68,16 +57,14 @@ exports.go = function (req, res) {
         const find = await dbo.collection("location").find({ location: req.body['location'] }).toArray()     //insert new location
         const findlengthlo = await dbo.collection("location").find({}).toArray()
 
-        if (find.hasOwnProperty(0)) {
-
+        if (find.hasOwnProperty(0) === true) {
             if (find[0].location === req.body['location']) {
                 haslo = false
                 var indexlo = 0
             }
-
             if (haslo) {
                 keylocation = findlengthlo.length + 1
-                if (req.body['inBuilding']) {
+                if (req.body['inBuilding'] === true) {
                     await dbo.collection("location").insertOne({ location: req.body['location'], key: keylocation.toString(), indoor: currentdata.data[0] })
                 }
                 else {
@@ -85,9 +72,8 @@ exports.go = function (req, res) {
                 }
             }
             else {
-                if (req.body['inBuilding']) {
+                if (req.body['inBuilding'] === true) {
                     var updatecurrentdata = { $set: { indoor: currentdata.data[0] } }
-
                     await dbo.collection("location").updateOne({ location: find[indexlo].location }, updatecurrentdata)
                 }
                 else {
@@ -98,7 +84,7 @@ exports.go = function (req, res) {
         }
         else {
             keylocation = findlengthlo.length + 1
-            if (req.body['inBuilding']) {
+            if (req.body['inBuilding'] === true) {
                 await dbo.collection("location").insertOne({ location: req.body['location'], key: keylocation.toString(), indoor: currentdata.data[0] })
             }
             else {
@@ -118,13 +104,14 @@ exports.go = function (req, res) {
 
             var dbo = db.db("DataSensor");
             var adddata = { $push: { data: newdata.data[0] }, $set: { ave: newdata.ave } }
+            
             await dbo.collection(findkey[0].key).update({ inBuilding: req.body['inBuilding'] }, adddata)
             console.log("1 document update");
         }
         else {
-            newdata['ave'] = [{ 'uv': req.body['data']['uv'].toFixed(2), 'wind': req.body['data']['wind'].toFixed(2), 'humidity': req.body['data']['humidity'].toFixed(2), 'temperature': req.body['data']['temperature'].toFixed(2) }]
-
+            newdata['ave'] = [{ 'uv': req.body['data']['uv'], 'wind': req.body['data']['wind'], 'humidity': req.body['data']['humidity'], 'temperature': req.body['data']['temperature'] }]
             var dbo = db.db("DataSensor");
+            
             await dbo.collection(findkey[0].key).insertOne(newdata)
             console.log("1 document insert");
         }

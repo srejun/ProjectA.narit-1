@@ -14,6 +14,8 @@ RUN npm install
 
 # Bundle app source
 COPY . .
+COPY timezone /etc/timezone
 
+RUN dpkg-reconfigure -f noninteractive tzdata
 EXPOSE 8081
 CMD [ "npm","run", "start" ]

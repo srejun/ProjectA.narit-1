@@ -1,5 +1,7 @@
 #!/bin/bash
 git pull
+git checkout deploy
+git pull
 sudo docker stop backend
 sudo docker container rm backend
 sudo docker build -t denice/nodejsapp .
