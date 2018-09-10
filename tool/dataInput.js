@@ -15,14 +15,11 @@ exports.go = function (req, res) {
         var year = date.getFullYear()
         var month = date.getMonth()
         var day = date.getDate()
-        var hour = date.getHours()
-        var minute = date.getMinutes()
-        var second = date.getSeconds()
         var checktime = new Date(year + "/" + (month + 1) + "/" + (day + 1))
         var alltime = new Date(year + "/" + (month + 1) + "/" + day)
+        
         console.log(alltime)
         console.log(checktime)
-        //console.log(req.body['data']['uv'])
 
         if (req.body['data']['uv'] === undefined) { req.body['data']['uv'] = 0 }
         //console.log(req.body['data']['uv'])
@@ -43,13 +40,13 @@ exports.go = function (req, res) {
         newdata['inBuilding'] = req.body['inBuilding']
         newdata['rate'] = 5
         newdata['date'] = alltime.getTime()
-        //currentdata['data'] = [{ inBuilding: req.body['inBuilding'], 'uv': req.body['data']['uv'], 'wind': req.body['data']['wind'], 'humidity': req.body['data']['humidity'], 'temperature': req.body['data']['temperature'], 'time': time }]
+
         if (req.body['inBuilding']) {
-            if (req.body['data']['humidity'] >= 75) currentdata['data'] = [{ inBuilding: req.body['inBuilding'], 'uv': req.body['data']['uv'], 'wind': req.body['data']['wind'], 'humidity': req.body['data']['humidity'], 'temperature': req.body['data']['temperature'], 'time': time, 'flag': 'dark' }]
-            else if (req.body['data']['humidity'] >= 70) currentdata['data'] = [{ inBuilding: req.body['inBuilding'], 'uv': req.body['data']['uv'], 'wind': req.body['data']['wind'], 'humidity': req.body['data']['humidity'], 'temperature': req.body['data']['temperature'], 'time': time, 'flag': 'danger' }]
-            else if (req.body['data']['humidity'] >= 65) currentdata['data'] = [{ inBuilding: req.body['inBuilding'], 'uv': req.body['data']['uv'], 'wind': req.body['data']['wind'], 'humidity': req.body['data']['humidity'], 'temperature': req.body['data']['temperature'], 'time': time, 'flag': 'warning' }]
-            else if (req.body['data']['humidity'] >= 60) currentdata['data'] = [{ inBuilding: req.body['inBuilding'], 'uv': req.body['data']['uv'], 'wind': req.body['data']['wind'], 'humidity': req.body['data']['humidity'], 'temperature': req.body['data']['temperature'], 'time': time, 'flag': 'success' }]
-            else if (req.body['data']['humidity'] >= 55) currentdata['data'] = [{ inBuilding: req.body['inBuilding'], 'uv': req.body['data']['uv'], 'wind': req.body['data']['wind'], 'humidity': req.body['data']['humidity'], 'temperature': req.body['data']['temperature'], 'time': time, 'flag': 'light' }]
+            if (req.body['data']['humidity'] > 75) currentdata['data'] = [{ inBuilding: req.body['inBuilding'], 'uv': req.body['data']['uv'], 'wind': req.body['data']['wind'], 'humidity': req.body['data']['humidity'], 'temperature': req.body['data']['temperature'], 'time': time, 'flag': 'dark' }]
+            else if (req.body['data']['humidity'] > 70) currentdata['data'] = [{ inBuilding: req.body['inBuilding'], 'uv': req.body['data']['uv'], 'wind': req.body['data']['wind'], 'humidity': req.body['data']['humidity'], 'temperature': req.body['data']['temperature'], 'time': time, 'flag': 'danger' }]
+            else if (req.body['data']['humidity'] > 65) currentdata['data'] = [{ inBuilding: req.body['inBuilding'], 'uv': req.body['data']['uv'], 'wind': req.body['data']['wind'], 'humidity': req.body['data']['humidity'], 'temperature': req.body['data']['temperature'], 'time': time, 'flag': 'warning' }]
+            else if (req.body['data']['humidity'] > 60) currentdata['data'] = [{ inBuilding: req.body['inBuilding'], 'uv': req.body['data']['uv'], 'wind': req.body['data']['wind'], 'humidity': req.body['data']['humidity'], 'temperature': req.body['data']['temperature'], 'time': time, 'flag': 'success' }]
+            else currentdata['data'] = [{ inBuilding: req.body['inBuilding'], 'uv': req.body['data']['uv'], 'wind': req.body['data']['wind'], 'humidity': req.body['data']['humidity'], 'temperature': req.body['data']['temperature'], 'time': time, 'flag': 'light' }]
         }
         else{
             currentdata['data'] = [{ inBuilding: req.body['inBuilding'], 'uv': req.body['data']['uv'], 'wind': req.body['data']['wind'], 'humidity': req.body['data']['humidity'], 'temperature': req.body['data']['temperature'], 'time': time}]
@@ -62,7 +59,6 @@ exports.go = function (req, res) {
         newlo['location'] = req.body['location']
         //datalo = { location: req.body['location'] }
         var haslo = true
-        var hasinside = false
         const find = await dbo.collection("location").find({ location: req.body['location'] }).toArray()     //insert new location
         const findlengthlo = await dbo.collection("location").find({}).toArray()
         //console.log("lo"+JSON.stringify(find[0].location))
@@ -99,9 +95,6 @@ exports.go = function (req, res) {
                     var updatecurrentdata = { $set: { outdoor: currentdata.data[0] } }
                     var updatesertloaddout = await dbo.collection("location").updateOne({ location: find[indexlo].location }, updatecurrentdata)
                 }
-
-                //console.log("updatelo")
-
             }
         }
         else {
@@ -140,21 +133,12 @@ exports.go = function (req, res) {
 
             var dbo = db.db("DataSensor");
             var adddata = { $push: { data: newdata.data[0] }, $set: { ave: newdata.ave } }
-            var updatedata = await dbo.collection(findkey[0].key).update({ inBuilding: req.body['inBuilding'] }, adddata)
-            //console.log("1 document update");
-            //db.close();
-
-
+            await dbo.collection(findkey[0].key).update({ inBuilding: req.body['inBuilding'] }, adddata)
         }
         else {
             newdata['ave'] = [{ 'uv': req.body['data']['uv'], 'wind': req.body['data']['wind'], 'humidity': req.body['data']['humidity'], 'temperature': req.body['data']['temperature'] }]
-
             var dbo = db.db("DataSensor");
-            var insertdata = await dbo.collection(findkey[0].key).insertOne(newdata)
-            //console.log("1 document insert");
-            // db.close();
-
-
+            await dbo.collection(findkey[0].key).insertOne(newdata)
         }
         db.close();
 
