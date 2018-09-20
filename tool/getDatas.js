@@ -8,10 +8,11 @@ exports.go = function (req, res) {
         var dbo = db.db("DataSensor");
         var have_ses = await dbo.collection("Sessions").find({ session_id: req.sessionID }).toArray()
         if (have_ses.length <= 0) {
+            value.err='permission denied'
             res.end(JSON.stringify(value))
         }
         else {
-            var datas = await dbo.collection("location").find({}).toArray()
+            var datas = await dbo.collection("location").find({status: true}).toArray()
 
             value.datas = datas.map(function (obj) {
                 var new_obj = {}

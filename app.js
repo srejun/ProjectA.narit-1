@@ -66,6 +66,9 @@ app.post('/api/getDatabyTime', getDatabyTime.go)
 var getLocations = require('./tool/getLocations')
 app.post('/api/getLocations', getLocations.go)
 
+var delLocation = require('./tool/delLocation')
+app.post('/api/delLocation', delLocation.go)
+
 var getDay = require('./tool/getDay')
 app.post('/api/getDay', getDay.go)
 

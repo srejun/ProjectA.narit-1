@@ -13,29 +13,29 @@ exports.go = function (req, res) {
             res.end(JSON.stringify(value));
         }
         else {
-            var result = await dbo.collection("location").find({ location: req.body['location'] }).toArray()
-            const findlengthlo = await dbo.collection("location").find({}).toArray() 
-            keylocation=findlengthlo.length+1
-                if (result.length > 0) {
-                    value.err = 'Same Collection!'
-                    console.log(value);
-                    res.end(JSON.stringify(value));
-                }
-                else {
-                    value.confirm = true;
-                    dbo.collection("location").insertOne({ location: req.body['location'],key:keylocation.toString() }, function (err, res) {
-                        if (err) throw err;
-                        console.log("1 document inserted");
-                    });
-                    dbo.createCollection(keylocation.toString(), function (err, res) {
-                        if (err) throw err;
-                        console.log("Collection created!");
-                        db.close();
-                    });
-                    console.log(value);
-                    res.end(JSON.stringify(value));
-                }
-            
+            var result = await dbo.collection("location").find({ location: req.body['location'], status: true }).toArray()
+            const findlengthlo = await dbo.collection("location").find({}).toArray()
+            keylocation = findlengthlo.length + 1
+            if (result.length > 0) {
+                value.err = 'Same Collection!'
+                console.log(value);
+                res.end(JSON.stringify(value));
+            }
+            else {
+                value.confirm = true;
+                dbo.collection("location").insertOne({ location: req.body['location'], key: keylocation.toString(), status: true }, function (err, res) {
+                    if (err) throw err;
+                    console.log("1 document inserted");
+                });
+                dbo.createCollection(keylocation.toString(), function (err, res) {
+                    if (err) throw err;
+                    console.log("Collection created!");
+                    db.close();
+                });
+                console.log(value);
+                res.end(JSON.stringify(value));
+            }
+
         }
     });
 }

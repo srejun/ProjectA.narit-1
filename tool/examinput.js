@@ -20,27 +20,28 @@ exports.go = function (req, res) {
         var sum = year + "/" + (month + 1) + "/" + (day + 1)
         var checktime = new Date(sum)
         var time = new Date(alltime).getTime()
-        
         if (req.body['data']['uv'] === undefined) { req.body['data']['uv'] = 0 }
         if (req.body['data']['wind'] === undefined) { req.body['data']['wind'] = 0 }
         if (req.body['data']['humidity'] === undefined) { req.body['data']['humidity'] = 0 }
         if (req.body['data']['temperature'] === undefined) { req.body['data']['temperature'] = 0 }
-        
         let timenow
         let datenow
         var indexlo = 0
         let newdata = {}
         let changdata = {}
         let currentdata = {}
-        
+
         newdata['inBuilding'] = req.body['inBuilding']
         newdata['rate'] = 5
         newdata['date'] = alltime.getTime()
-        
         var adddata
-        const find = await dbo.collection("location").find({ location: req.body['location'] }).toArray()
+        //var find = "nodata"
+        const find = await dbo.collection("location").find({ location: req.body['location'], status: true }).toArray()
         var result = await dbo.collection(find[0].key).find({ inBuilding: req.body['inBuilding'] }).toArray()
 
+        //find = result.length
+        //console.log(result.length)
+        //console.log("res" + result.length)
         timenow = result[result.length - 1].data[result[result.length - 1].data.length - 1].time
         datenow = result[result.length - 1].date
         console.log("time " + datenow)
@@ -50,17 +51,17 @@ exports.go = function (req, res) {
             var dbo = db.db("DataSensor");
             for (i = 0; i < 4000; i++) {
                 timenow = timenow + (300000)
-                changdata['data'] = { 'uv': req.body['data']['uv'] + Math.floor(Math.random() * 45) + 1, 'wind': req.body['data']['wind']+ Math.floor(Math.random() * 45) + 1, 'humidity': req.body['data']['humidity']+ Math.floor(Math.random() * 45) + 1, 'temperature': req.body['data']['temperature']+ Math.floor(Math.random() * 45) + 1}
+                changdata['data'] = { 'uv': req.body['data']['uv'] + Math.floor(Math.random() * 45) + 1, 'wind': req.body['data']['wind'] + Math.floor(Math.random() * 45) + 1, 'humidity': req.body['data']['humidity'] + Math.floor(Math.random() * 45) + 1, 'temperature': req.body['data']['temperature'] + Math.floor(Math.random() * 45) + 1 }
                 //console.log(changdata['data'])
-                if (req.body['inBuilding']) {
+                if (req.body['inBuilding']===false) {
                     if (req.body['data']['humidity'] > 75) currentdata['data'] = [{ inBuilding: req.body['inBuilding'], 'uv': req.body['data']['uv'], 'wind': req.body['data']['wind'], 'humidity': req.body['data']['humidity'], 'temperature': req.body['data']['temperature'], 'time': time, 'flag': 'dark' }]
                     else if (req.body['data']['humidity'] > 70) currentdata['data'] = [{ inBuilding: req.body['inBuilding'], 'uv': req.body['data']['uv'], 'wind': req.body['data']['wind'], 'humidity': req.body['data']['humidity'], 'temperature': req.body['data']['temperature'], 'time': time, 'flag': 'danger' }]
                     else if (req.body['data']['humidity'] > 65) currentdata['data'] = [{ inBuilding: req.body['inBuilding'], 'uv': req.body['data']['uv'], 'wind': req.body['data']['wind'], 'humidity': req.body['data']['humidity'], 'temperature': req.body['data']['temperature'], 'time': time, 'flag': 'warning' }]
                     else if (req.body['data']['humidity'] > 60) currentdata['data'] = [{ inBuilding: req.body['inBuilding'], 'uv': req.body['data']['uv'], 'wind': req.body['data']['wind'], 'humidity': req.body['data']['humidity'], 'temperature': req.body['data']['temperature'], 'time': time, 'flag': 'success' }]
                     else currentdata['data'] = [{ inBuilding: req.body['inBuilding'], 'uv': req.body['data']['uv'], 'wind': req.body['data']['wind'], 'humidity': req.body['data']['humidity'], 'temperature': req.body['data']['temperature'], 'time': time, 'flag': 'light' }]
                 }
-                else{
-                    currentdata['data'] = [{ inBuilding: req.body['inBuilding'], 'uv': req.body['data']['uv'], 'wind': req.body['data']['wind'], 'humidity': req.body['data']['humidity'], 'temperature': req.body['data']['temperature'], 'time': time}]
+                else {
+                    currentdata['data'] = [{ inBuilding: req.body['inBuilding'], 'uv': req.body['data']['uv'], 'wind': req.body['data']['wind'], 'humidity': req.body['data']['humidity'], 'temperature': req.body['data']['temperature'], 'time': time }]
                 }
 
                 newdata['data'] = [{ 'uv': changdata['data']['uv'], 'wind': changdata['data']['wind'], 'humidity': changdata['data']['humidity'], 'temperature': changdata['data']['temperature'], 'time': timenow }]
@@ -74,17 +75,24 @@ exports.go = function (req, res) {
                 if (timenow < checktime.getTime()) {
                     if (req.body['inBuilding'] === true) {
                         var updatecurrentdata = { $set: { indoor: currentdata.data[0] } }
-                        await dbo.collection("location").updateOne({ location: find[indexlo].location }, updatecurrentdata)
+                        await dbo.collection("location").updateOne({ location: find[indexlo].location, status: true }, updatecurrentdata)
                     }
                     else {
                         var updatecurrentdata = { $set: { outdoor: currentdata.data[0] } }
-                        await dbo.collection("location").updateOne({ location: find[indexlo].location }, updatecurrentdata)
+                        await dbo.collection("location").updateOne({ location: find[indexlo].location, status: true }, updatecurrentdata)
                     }
                     await dbo.collection(find[0].key).update({ inBuilding: req.body['inBuilding'], date: datenow }, adddata)
                 }
+
             }
+
+
         }
+        // s
+
+        //console.log(timenow)
         db.close();
+
     })
     res.end("OKKKKK")
 }

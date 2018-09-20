@@ -17,7 +17,7 @@ exports.go = function (req, res) {
         res.end(JSON.stringify(value))
     }
     else {
-        MongoClient.connect(url ,async function (err, db) {
+        MongoClient.connect(url, async function (err, db) {
             var dbo = db.db("DataSensor");
             var have_ses = await dbo.collection("Sessions").find({ session_id: req.sessionID }).toArray()
             if (have_ses.length <= 0) {
@@ -26,7 +26,7 @@ exports.go = function (req, res) {
                 res.end(JSON.stringify(value))
             }
             else {
-                const findkey = await dbo.collection("location").find({location: req.body['location']}).toArray() 
+                const findkey = await dbo.collection("location").find({ location: req.body['location'], status: true }).toArray()
                 var result = await dbo.collection(findkey[0].key).find({ inBuilding: req.body['inBuilding'], date: { $gte: new Date(req.body['typedate'].split(" to ")[0]).getTime(), $lte: new Date(req.body['typedate'].split(" to ")[1]).getTime() } }).toArray()
                 if (result.length <= 0) {
                     value.err = 'no data'
