@@ -9,10 +9,11 @@ exports.go = function (req, res) {
         var dbo = db.db("DataSensor");
         var have_ses = await dbo.collection("Sessions").find({ session_id: req.sessionID }).toArray()
 
-        if (have_ses.length > 0){
-            value.datas = await dbo.collection("location").find({}).toArray()
+        if (have_ses.length > 0) {
+            value.datas = await dbo.collection("location").find({status: true}).toArray()
             value.confirm = true
         }
+        else value.err = 'permission denied'
         console.log(value)
         res.end(JSON.stringify(value))
         db.close();

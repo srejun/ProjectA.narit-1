@@ -17,7 +17,7 @@ exports.go = function (req, res) {
         var day = date.getDate()
         var checktime = new Date(year + "/" + (month + 1) + "/" + (day + 1))
         var alltime = new Date(year + "/" + (month + 1) + "/" + day)
-        
+
         console.log(alltime)
         console.log(checktime)
 
@@ -41,15 +41,15 @@ exports.go = function (req, res) {
         newdata['rate'] = 5
         newdata['date'] = alltime.getTime()
 
-        if (req.body['inBuilding']) {
+        if (req.body['inBuilding']===false) {
             if (req.body['data']['humidity'] > 75) currentdata['data'] = [{ inBuilding: req.body['inBuilding'], 'uv': req.body['data']['uv'], 'wind': req.body['data']['wind'], 'humidity': req.body['data']['humidity'], 'temperature': req.body['data']['temperature'], 'time': time, 'flag': 'dark' }]
             else if (req.body['data']['humidity'] > 70) currentdata['data'] = [{ inBuilding: req.body['inBuilding'], 'uv': req.body['data']['uv'], 'wind': req.body['data']['wind'], 'humidity': req.body['data']['humidity'], 'temperature': req.body['data']['temperature'], 'time': time, 'flag': 'danger' }]
             else if (req.body['data']['humidity'] > 65) currentdata['data'] = [{ inBuilding: req.body['inBuilding'], 'uv': req.body['data']['uv'], 'wind': req.body['data']['wind'], 'humidity': req.body['data']['humidity'], 'temperature': req.body['data']['temperature'], 'time': time, 'flag': 'warning' }]
             else if (req.body['data']['humidity'] > 60) currentdata['data'] = [{ inBuilding: req.body['inBuilding'], 'uv': req.body['data']['uv'], 'wind': req.body['data']['wind'], 'humidity': req.body['data']['humidity'], 'temperature': req.body['data']['temperature'], 'time': time, 'flag': 'success' }]
             else currentdata['data'] = [{ inBuilding: req.body['inBuilding'], 'uv': req.body['data']['uv'], 'wind': req.body['data']['wind'], 'humidity': req.body['data']['humidity'], 'temperature': req.body['data']['temperature'], 'time': time, 'flag': 'light' }]
         }
-        else{
-            currentdata['data'] = [{ inBuilding: req.body['inBuilding'], 'uv': req.body['data']['uv'], 'wind': req.body['data']['wind'], 'humidity': req.body['data']['humidity'], 'temperature': req.body['data']['temperature'], 'time': time}]
+        else {
+            currentdata['data'] = [{ inBuilding: req.body['inBuilding'], 'uv': req.body['data']['uv'], 'wind': req.body['data']['wind'], 'humidity': req.body['data']['humidity'], 'temperature': req.body['data']['temperature'], 'time': time }]
         }
 
         newdata['data'] = [{ 'uv': req.body['data']['uv'], 'wind': req.body['data']['wind'], 'humidity': req.body['data']['humidity'], 'temperature': req.body['data']['temperature'], 'time': time }]
@@ -59,7 +59,7 @@ exports.go = function (req, res) {
         newlo['location'] = req.body['location']
         //datalo = { location: req.body['location'] }
         var haslo = true
-        const find = await dbo.collection("location").find({ location: req.body['location'] }).toArray()     //insert new location
+        const find = await dbo.collection("location").find({ location: req.body['location'], status: true }).toArray()     //insert new location
         const findlengthlo = await dbo.collection("location").find({}).toArray()
         //console.log("lo"+JSON.stringify(find[0].location))
         //console.log(data.location)
@@ -77,10 +77,10 @@ exports.go = function (req, res) {
                 //console.log("update "+findlengthlo.length)
                 keylocation = findlengthlo.length + 1
                 if (req.body['inBuilding'] === true) {
-                    var insertloin = await dbo.collection("location").insertOne({ location: req.body['location'], key: keylocation.toString(), indoor: currentdata.data[0] })
+                    await dbo.collection("location").insertOne({ location: req.body['location'], key: keylocation.toString(), indoor: currentdata.data[0], status: true })
                 }
                 else {
-                    var insertloin = await dbo.collection("location").insertOne({ location: req.body['location'], key: keylocation.toString(), outdoor: currentdata.data[0] })
+                    await dbo.collection("location").insertOne({ location: req.body['location'], key: keylocation.toString(), outdoor: currentdata.data[0], status: true })
                 }
 
 
@@ -88,12 +88,11 @@ exports.go = function (req, res) {
             else {
                 if (req.body['inBuilding'] === true) {
                     var updatecurrentdata = { $set: { indoor: currentdata.data[0] } }
-
-                    var updatesertloaddin = await dbo.collection("location").updateOne({ location: find[indexlo].location }, updatecurrentdata)
+                    await dbo.collection("location").updateOne({ location: find[indexlo].location, status: true }, updatecurrentdata)
                 }
                 else {
                     var updatecurrentdata = { $set: { outdoor: currentdata.data[0] } }
-                    var updatesertloaddout = await dbo.collection("location").updateOne({ location: find[indexlo].location }, updatecurrentdata)
+                    await dbo.collection("location").updateOne({ location: find[indexlo].location, status: true }, updatecurrentdata)
                 }
             }
         }
@@ -102,14 +101,14 @@ exports.go = function (req, res) {
             //console.log("insert "+findlengthlo.length)
             keylocation = findlengthlo.length + 1
             if (req.body['inBuilding'] === true) {
-                var insertloin = await dbo.collection("location").insertOne({ location: req.body['location'], key: keylocation.toString(), indoor: currentdata.data[0] })
+                await dbo.collection("location").insertOne({ location: req.body['location'], key: keylocation.toString(), indoor: currentdata.data[0],status: true })
             }
             else {
-                var insertloout = await dbo.collection("location").insertOne({ location: req.body['location'], key: keylocation.toString(), outdoor: currentdata.data[0] })
+                await dbo.collection("location").insertOne({ location: req.body['location'], key: keylocation.toString(), outdoor: currentdata.data[0],status: true })
             }
         }
 
-        const findkey = await dbo.collection("location").find({ location: req.body['location'] }).toArray()
+        const findkey = await dbo.collection("location").find({ location: req.body['location'],status: true }).toArray()
         //console.log("kloc"+findkey[0].key)
         //
         var result = await dbo.collection(findkey[0].key).find({ inBuilding: req.body['inBuilding'], date: newdata['date'] }).toArray()

@@ -28,7 +28,7 @@ exports.go = function (req, res) {
                 }
                 var tmp_time = new Date(req.body['typedate'] + " " + "00:00:00 ").getTime()
                 console.log(new Date(tmp_time).toLocaleString()+":"+tmp_time)
-                const findkey = await dbo.collection("location").find({location: req.body['location']}).toArray()
+                const findkey = await dbo.collection("location").find({location: req.body['location'],status: true}).toArray()
                 console.log(findkey)
                 console.log({ inBuilding: req.body['inBuilding'], date: tmp_time })
                 var result = await dbo.collection(findkey[0].key).find({ inBuilding: req.body['inBuilding'], date: tmp_time }).toArray()
