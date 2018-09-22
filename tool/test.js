@@ -60,7 +60,7 @@ exports.go = function (req, res) {
         //datalo = { location: req.body['location'] }
         var haslo = true
         var hasinside = false
-        const find = await dbo.collection("location").find({ location: req.body['location'], status: true }).toArray()     
+        const find = await dbo.collection("location").find({ location: req.body['location']}).toArray()     
         //insert new location
         const findlengthlo = await dbo.collection("location").find({}).toArray()
 
@@ -84,11 +84,11 @@ exports.go = function (req, res) {
             else {
                 if (req.body['inBuilding'] === true) {
                     var updatecurrentdata = { $set: { indoor: currentdata.data[0] } }
-                    await dbo.collection("location").updateOne({ location: find[indexlo].location, status: true }, updatecurrentdata)
+                    await dbo.collection("location").updateOne({ location: find[indexlo].location}, updatecurrentdata)
                 }
                 else {
                     var updatecurrentdata = { $set: { outdoor: currentdata.data[0] } }
-                    await dbo.collection("location").updateOne({ location: find[indexlo].location, status: true }, updatecurrentdata)
+                    await dbo.collection("location").updateOne({ location: find[indexlo].location}, updatecurrentdata)
                 }
 
                 //console.log("updatelo")
@@ -108,7 +108,7 @@ exports.go = function (req, res) {
             }
         }
 
-        const findkey = await dbo.collection("location").find({ location: req.body['location'], status: true }).toArray()
+        const findkey = await dbo.collection("location").find({ location: req.body['location']}).toArray()
         //console.log("kloc"+findkey[0].key)
         //
         var result = await dbo.collection(findkey[0].key).find({ inBuilding: req.body['inBuilding'], date: newdata['date'] }).toArray()

@@ -39,7 +39,7 @@ exports.go = function (req, res) {
                         humidity: 0,
                         wind: 0,
                         time: null,
-                        flag: 'light'
+                        flag: 'secondary'
                     }
                 }
                 else {
