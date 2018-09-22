@@ -23,7 +23,12 @@ exports.go = function (req, res) {
                 wind: [],
                 time: []
             }
+            console.log("start:"+req.body['Fyear']+" End:"+req.body['Tyear'])
+
+            var dist = req.body['Tyear'] - req.body['Fyear'] 
+            console.log("distance = "+dist)
             for (var i = req.body['Fyear']; i <= req['Tyear']; i++) {
+                console.log("in for i="+i)
                 data[i] = {
                     1: {
                         ave: {
