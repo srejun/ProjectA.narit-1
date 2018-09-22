@@ -157,14 +157,14 @@ exports.go = function (req, res) {
             console.log("xdata i s"+JSON.stringify(data))
             
             for (var i = 0; i < result.length; i++) {
-                data[new Date(result[i].date).getFullYear()][new Date(result[i].date).getMonth() + 1].humid += result[i].ave[0].humidity
-                data[new Date(result[i].date).getFullYear()][new Date(result[i].date).getMonth() + 1].uv += result[i].ave[0].uv
-                data[new Date(result[i].date).getFullYear()][new Date(result[i].date).getMonth() + 1].wind += result[i].ave[0].wind
-                data[new Date(result[i].date).getFullYear()][new Date(result[i].date).getMonth() + 1].tmp += result[i].ave[0].temperature
-                data[new Date(result[i].date).getFullYear()][new Date(result[i].date).getMonth() + 1].count++
-                data[new Date(result[i].date).getFullYear()][new Date(result[i].date).getMonth() + 1].time = new Date(result[i].date).getFullYear( + "/" + new Date(result[i].date).getMonth())
+                data[new Date(result[i].date).getFullYear()][new Date(result[i].date).getMonth() + 1].ave.humid += result[i].ave[0].humidity
+                data[new Date(result[i].date).getFullYear()][new Date(result[i].date).getMonth() + 1].ave.uv += result[i].ave[0].uv
+                data[new Date(result[i].date).getFullYear()][new Date(result[i].date).getMonth() + 1].ave.wind += result[i].ave[0].wind
+                data[new Date(result[i].date).getFullYear()][new Date(result[i].date).getMonth() + 1].ave.tmp += result[i].ave[0].temperature
+                data[new Date(result[i].date).getFullYear()][new Date(result[i].date).getMonth() + 1].ave.count++
+                data[new Date(result[i].date).getFullYear()][new Date(result[i].date).getMonth() + 1].ave.time = new Date(result[i].date).getFullYear()+ "/" + new Date(result[i].date).getMonth()
                  if (i%50==0){console.log("data is"+50*i)
-                console.log( data[new Date(result[i].date).getFullYear()][new Date(result[i].date).getMonth() + 1])
+                console.log( data[new Date(result[i].date).getFullYear()][new Date(result[i].date).getMonth() + 1].ave)
                 }
                  
             }
