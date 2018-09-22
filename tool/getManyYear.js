@@ -22,8 +22,8 @@ exports.go = function (req, res) {
                 {
                     data.push(getYdata(i))
                 }
-                //res.end(JSON.stringify(data))
-                res.end("OK")
+                res.end(JSON.stringify(data))
+                //res.end("OK")
            
                
 
