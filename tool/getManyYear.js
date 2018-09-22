@@ -10,16 +10,8 @@ exports.go = function (req, res) {
     else {
         MongoClient.connect(url, async function (err, db) {
             var dbo = db.db("DataSensor");
-            var have_ses = await dbo.collection("Sessions").find({ session_id: req.sessionID }).toArray()
-            if (have_ses.length <= 0) {
-                value.err = 'permission denied'
-                console.log(value)
-                res.end(JSON.stringify(value))
-            }
-            else {
-
-
-
+            //var have_ses = await dbo.collection("Sessions").find({ session_id: req.sessionID }).toArray()
+          
                 const findkey = await dbo.collection("location").find({ location: req.body['location'], status: true }).toArray()
 
                 async function getYdata(x) {
@@ -36,7 +28,7 @@ exports.go = function (req, res) {
                
 
 
-            }
+            
             db.close()
         });
     }
