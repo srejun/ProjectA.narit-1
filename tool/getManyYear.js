@@ -149,6 +149,7 @@ exports.go = function (req, res) {
                     }
                 }
             }
+            console.log(data)
             for (var i = 0; i < result.length; i++) {
                 data[new Date(result[i].date).getFullYear()][new Date(result[i].date).getMonth() + 1].humid += result[i].ave[0].humidity
                 data[new Date(result[i].date).getFullYear()][new Date(result[i].date).getMonth() + 1].uv += result[i].ave[0].uv
@@ -156,7 +157,9 @@ exports.go = function (req, res) {
                 data[new Date(result[i].date).getFullYear()][new Date(result[i].date).getMonth() + 1].tmp += result[i].ave[0].temperature
                 data[new Date(result[i].date).getFullYear()][new Date(result[i].date).getMonth() + 1].count++
                 data[new Date(result[i].date).getFullYear()][new Date(result[i].date).getMonth() + 1].time = new Date(result[i].date).getFullYear().toString() + "/" + new Date(result[i].date).getMonth().toString()
+                if(i%50==0){console.log("data is"+50*i)}
             }
+            console.log("pass data")
             function create_res(x) {
             
                 for(var j =1;j<=12;j++)
@@ -173,6 +176,7 @@ exports.go = function (req, res) {
                     response_data.wind.push(data[x][j].ave.wind)
                     response_data.tmp.push(data[x][j].ave.tmp)
                 }
+                console.log("data"+x+"is"+ data[x])
             }
             for(var i = req.body['Fyear']; i <= req['Tyear']; i++)
             {
