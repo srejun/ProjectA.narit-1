@@ -27,7 +27,7 @@ exports.go = function (req, res) {
 
             var dist = req.body['Tyear'] - req.body['Fyear'] 
             console.log("distance = "+dist)
-            for (var i = req.body['Fyear']; i <= req['Tyear']; i++) {
+            for (var i = 2016; i <= 2018; i++) {
                 console.log("in for i="+i)
                 data[i] = {
                     1: {
