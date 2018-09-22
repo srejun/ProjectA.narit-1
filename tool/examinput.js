@@ -36,7 +36,7 @@ exports.go = function (req, res) {
         newdata['date'] = alltime.getTime()
         var adddata
         //var find = "nodata"
-        const find = await dbo.collection("location").find({ location: req.body['location'], status: true }).toArray()
+        const find = await dbo.collection("location").find({ location: req.body['location']}).toArray()
         var result = await dbo.collection(find[0].key).find({ inBuilding: req.body['inBuilding'] }).toArray()
 
         //find = result.length
@@ -75,11 +75,11 @@ exports.go = function (req, res) {
                 if (timenow < checktime.getTime()) {
                     if (req.body['inBuilding'] === true) {
                         var updatecurrentdata = { $set: { indoor: currentdata.data[0] } }
-                        await dbo.collection("location").updateOne({ location: find[indexlo].location, status: true }, updatecurrentdata)
+                        await dbo.collection("location").updateOne({ location: find[indexlo].location}, updatecurrentdata)
                     }
                     else {
                         var updatecurrentdata = { $set: { outdoor: currentdata.data[0] } }
-                        await dbo.collection("location").updateOne({ location: find[indexlo].location, status: true }, updatecurrentdata)
+                        await dbo.collection("location").updateOne({ location: find[indexlo].location}, updatecurrentdata)
                     }
                     await dbo.collection(find[0].key).update({ inBuilding: req.body['inBuilding'], date: datenow }, adddata)
                 }

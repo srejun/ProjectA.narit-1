@@ -59,7 +59,7 @@ exports.go = function (req, res) {
         newlo['location'] = req.body['location']
         //datalo = { location: req.body['location'] }
         var haslo = true
-        const find = await dbo.collection("location").find({ location: req.body['location'], status: true }).toArray()     //insert new location
+        const find = await dbo.collection("location").find({ location: req.body['location']}).toArray()     //insert new location
         const findlengthlo = await dbo.collection("location").find({}).toArray()
         //console.log("lo"+JSON.stringify(find[0].location))
         //console.log(data.location)
@@ -88,11 +88,11 @@ exports.go = function (req, res) {
             else {
                 if (req.body['inBuilding'] === true) {
                     var updatecurrentdata = { $set: { indoor: currentdata.data[0] } }
-                    await dbo.collection("location").updateOne({ location: find[indexlo].location, status: true }, updatecurrentdata)
+                    await dbo.collection("location").updateOne({ location: find[indexlo].location}, updatecurrentdata)
                 }
                 else {
                     var updatecurrentdata = { $set: { outdoor: currentdata.data[0] } }
-                    await dbo.collection("location").updateOne({ location: find[indexlo].location, status: true }, updatecurrentdata)
+                    await dbo.collection("location").updateOne({ location: find[indexlo].location}, updatecurrentdata)
                 }
             }
         }
@@ -108,7 +108,7 @@ exports.go = function (req, res) {
             }
         }
 
-        const findkey = await dbo.collection("location").find({ location: req.body['location'],status: true }).toArray()
+        const findkey = await dbo.collection("location").find({ location: req.body['location']}).toArray()
         //console.log("kloc"+findkey[0].key)
         //
         var result = await dbo.collection(findkey[0].key).find({ inBuilding: req.body['inBuilding'], date: newdata['date'] }).toArray()
