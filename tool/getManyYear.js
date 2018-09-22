@@ -187,14 +187,14 @@ exports.go = function (req, res) {
                 }
                 console.log("data"+x+"is"+ data[x])
             }
-            for(var i = req.body['Fyear']; i <= req['Tyear']; i++)
+            for(var i = 2016; i <=2018; i++)
             {
                 create_res(i)
                 console.log(response_data.time[i])
             }
             console.log("finish")
 
-            res.end(JSON.stringify( response_data))
+            res.end(JSON.stringify(response_data))
 
 
 
