@@ -161,7 +161,7 @@ exports.go = function (req, res) {
                 data[new Date(result[i].date).getFullYear()][new Date(result[i].date).getMonth() + 1].ave.wind += result[i].ave[0].wind
                 data[new Date(result[i].date).getFullYear()][new Date(result[i].date).getMonth() + 1].ave.tmp += result[i].ave[0].temperature
                 data[new Date(result[i].date).getFullYear()][new Date(result[i].date).getMonth() + 1].ave.count++
-                data[new Date(result[i].date).getFullYear()][new Date(result[i].date).getMonth() + 1].ave.time = new Date(result[i].date).getFullYear()+ "/" + new Date(result[i].date).getMonth()
+                data[new Date(result[i].date).getFullYear()][new Date(result[i].date).getMonth() + 1].ave.time = new Date(result[i].date).getFullYear()+ "/" + new Date(result[i].date).getMonth()+1
                  if (i%50==0){console.log("data is"+50*i)
                 console.log( data[new Date(result[i].date).getFullYear()][new Date(result[i].date).getMonth() + 1].ave)
                 }
