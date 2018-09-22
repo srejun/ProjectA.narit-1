@@ -163,7 +163,10 @@ exports.go = function (req, res) {
                 data[new Date(result[i].date).getFullYear()][new Date(result[i].date).getMonth() + 1].tmp += result[i].ave[0].temperature
                 data[new Date(result[i].date).getFullYear()][new Date(result[i].date).getMonth() + 1].count++
                 data[new Date(result[i].date).getFullYear()][new Date(result[i].date).getMonth() + 1].time = new Date(result[i].date).getFullYear( + "/" + new Date(result[i].date).getMonth())
-                 if (i%50==0){console.log("data is"+50*i)}
+                 if (i%50==0){console.log("data is"+50*i)
+                console.log( data[new Date(result[i].date).getFullYear()][new Date(result[i].date).getMonth() + 1])
+                }
+                 
             }
             console.log("pass data")
             function create_res(x) {
@@ -187,7 +190,9 @@ exports.go = function (req, res) {
             for(var i = req.body['Fyear']; i <= req['Tyear']; i++)
             {
                 create_res(i)
+                console.log(response_data.time[i])
             }
+            console.log("finish")
 
             res.end(JSON.stringify( response_data))
 
