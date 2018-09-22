@@ -3,7 +3,7 @@ var url = require("../config").url
 exports.go = function (req, res) {
     var value = { confirm: false, err: '', data: null }
 
-    if (req.body['location'] === undefined || req.body['inBuilding'] === undefined || req.body['year'] === undefined) {
+    if (req.body['location'] === undefined || req.body['inBuilding'] === undefined || req.body['Fyear'] === undefined|| req.body['Tyear'] === undefined) {
         value.err = 'no filter'
         res.end(JSON.stringify(value))
     }

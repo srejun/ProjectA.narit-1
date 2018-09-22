@@ -77,6 +77,8 @@ app.post('/api/getMonth', getMonth.go)
 
 var getYear = require('./tool/getYear')
 app.post('/api/getYear', getYear.go)
+var getMYear = require('./tool/getManyYear')
+app.post('/api/getMYear', getMYear.go)
 
 var getCustom = require('./tool/getCustom')
 app.post('/api/getCustom', getCustom.go)
