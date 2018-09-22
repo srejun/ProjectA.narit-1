@@ -188,7 +188,7 @@ exports.go = function (req, res) {
                 }
                
             }
-            for(var i = start; i <=end; i++)
+            for(var i = start; i <=endyear; i++)
             {
                 create_res(i)
                 console.log(response_data.time[i])
