@@ -23,12 +23,11 @@ exports.go = function (req, res) {
                 wind: [],
                 time: []
             }
-            console.log("start:"+req.body['Fyear']+" End:"+req.body['Tyear'])
-
-            var dist = req.body['Tyear'] - req.body['Fyear'] 
-            console.log("distance = "+dist)
-            for (var i = 2016; i <= 2018; i++) {
-                console.log("in for i="+i)
+         
+            var start =parseInt(req.body['Fyear'])
+            var endyear =parseInt(req.body['Tyear'])
+            for (var i = start; i <= endyear; i++) {
+              
                 data[i] = {
                     1: {
                         ave: {
@@ -154,7 +153,7 @@ exports.go = function (req, res) {
                     }
                 }
             }
-            console.log("xdata i s"+JSON.stringify(data))
+       
             
             for (var i = 0; i < result.length; i++) {
                 data[new Date(result[i].date).getFullYear()][new Date(result[i].date).getMonth() + 1].ave.humid += result[i].ave[0].humidity
@@ -168,26 +167,28 @@ exports.go = function (req, res) {
                 }
                  
             }
-            console.log("pass data")
+     
             function create_res(x) {
             
                 for(var j =1;j<=12;j++)
                 {
                   
-                    data[x][j].ave.humid += data[x][j].ave.humid/data[x][j].ave.count
-                    data[x][j].ave.uv +=   data[x][j].ave.uv/data[x][j].ave.count
-                    data[x][j].ave.wind += data[x][j].ave.wind/data[x][j].ave.count
-                    data[x][j].ave.tmp += data[x][j].ave.tmp/data[x][j].ave.count
-
-                    response_data.humid.push(data[x][j].ave.humid)
-                    response_data.time.push(data[x][j].ave.time)
-                    response_data.uv.push(data[x][j].ave.uv)
-                    response_data.wind.push(data[x][j].ave.wind)
-                    response_data.tmp.push(data[x][j].ave.tmp)
+                    if (data[x][j].ave.count>0)
+                    {
+                            data[x][j].ave.humid = data[x][j].ave.humid/data[x][j].ave.count
+                            data[x][j].ave.uv =   data[x][j].ave.uv/data[x][j].ave.count
+                            data[x][j].ave.wind = data[x][j].ave.wind/data[x][j].ave.count
+                            data[x][j].ave.tmp = data[x][j].ave.tmp/data[x][j].ave.count
+                            response_data.humid.push(data[x][j].ave.humid)
+                            response_data.time.push(data[x][j].ave.time)
+                            response_data.uv.push(data[x][j].ave.uv)
+                            response_data.wind.push(data[x][j].ave.wind)
+                            response_data.tmp.push(data[x][j].ave.tmp)
+                     }
                 }
-                console.log("data"+x+"is"+ data[x])
+               
             }
-            for(var i = 2016; i <=2018; i++)
+            for(var i = start; i <=end; i++)
             {
                 create_res(i)
                 console.log(response_data.time[i])
