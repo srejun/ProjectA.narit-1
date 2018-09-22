@@ -12,18 +12,13 @@ exports.go = function (req, res) {
             var dbo = db.db("DataSensor");
             //var have_ses = await dbo.collection("Sessions").find({ session_id: req.sessionID }).toArray()
           
+          
                 const findkey = await dbo.collection("location").find({ location: req.body['location'], status: true }).toArray()
-
-                async function getYdata(x) {
-                   return result = await dbo.collection(findkey[0].key).find({ inBuilding: req.body['inBuilding'], date: { $gte: new Date(x + "-01-01 00:00:00").getTime(), $lt: new Date((parseInt(x) + 1).toString() + "-01-01 00:00:00").getTime() } }).toArray()
-                } 
+                var result = await dbo.collection(findkey[0].key).find({ inBuilding: req.body['inBuilding'], date: { $gte: new Date(req.body['Fyear'] + "-01-01 00:00:00").getTime(), $lt: new Date((parseInt(req.body['Tyear']) + 1).toString() + "-01-01 00:00:00").getTime() } }).toArray()
                 var data =[];
-                for(var i =req.body['Fyear'].parseInt();i<=req.body['Tyear'].parseInt();i++)
-                {
-                    data.push(getYdata(i))
-                }
-                res.end(JSON.stringify(data))
-                //res.end("OK")
+               
+               res.end(JSON.stringify(result))
+                
            
                
 
