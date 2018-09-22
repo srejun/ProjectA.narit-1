@@ -14,7 +14,7 @@ exports.go = function (req, res) {
           
           
                 const findkey = await dbo.collection("location").find({ location: req.body['location'], status: true }).toArray()
-                var result = await dbo.collection(findkey[0].key).find({ inBuilding: req.body['inBuilding'], date: { $gte: new Date(req.body['Fyear'] + "-01-01 00:00:00").getTime(), $lt: new Date((parseInt(req.body['Tyear']) + 1).toString() + "-01-01 00:00:00").getTime() } }).toArray()
+                var result = await dbo.collection(findkey[0].key).find({ inBuilding: req.body['inBuilding'], date: { $gte: new Date(req.body['Fyear'] + "-01-01 00:00:00").getTime(), $lte: new Date(req.body['Tyear'] + "-12-31 23:59:59").getTime() } }).toArray()
                 var data =[];
                
                res.end(JSON.stringify(result))
