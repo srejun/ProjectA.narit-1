@@ -16,7 +16,7 @@ exports.go = function (req, res) {
             res.end(JSON.stringify(value));
         }
         else {
-           await dbo.collection(col_user).find({ status: true }).toArray(function (err, result) {
+            await dbo.collection(col_user).find({ status: true }).project({ _id: 0, PASS: 0 }).toArray(function (err, result) {
                 if (err) throw err;
                 value.confirm = true
                 value.datas = result
