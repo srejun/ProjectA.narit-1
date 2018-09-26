@@ -42,18 +42,20 @@ exports.go = function (req, res) {
                 var update = { $push: { datas: new_data } }
                 await dbo.collection("Train").updateOne(filter, update)
                 console.log('update')
+                value.err = 'updated'
             }
             else {
                 //new data
                 var insert = { location: req.body.location, date: date, datas: [new_data] }
                 await dbo.collection("Train").insertOne(insert)
                 console.log('insert')
+                value.err = 'inserted'
             }
 
             value.confirm = true
         }
 
-        res.end("ok")
+        res.end(value)
         db.close()
     })
 }
