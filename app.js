@@ -10,6 +10,7 @@ app.use(cookieParser())
 app.use(bodyParser.json())
 app.use(cors({
   origin:['http://pc.devinice.com:1112'],
+  //origin:['http://localhost:8080'],
   methods:['GET','POST'],
   credentials: true ,// enable set cookie
 }));
@@ -88,6 +89,12 @@ app.post('/api/examInput', examInput.go)
 
 var test = require('./tool/test')
 app.post('/api/test', test.go) //sensor input update data
+
+var getAlldata = require('./tool/getAlldata')
+app.post('/api/getAlldata', getAlldata.go)
+
+var setTrain = require('./tool/setTrain')
+app.post('/api/setTrain', setTrain.go)
 
 ///////////////////////////////////////////////////////////////////////////////
 
