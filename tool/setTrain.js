@@ -55,7 +55,7 @@ exports.go = function (req, res) {
             value.confirm = true
         }
 
-        res.end(value)
+        res.end(JSON.stringify(value))
         db.close()
     })
 }
