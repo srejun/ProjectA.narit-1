@@ -18,7 +18,7 @@ exports.go = function (req, res) {
 
         for (var i = 0; i < locations.length; i++) {
             var data = {}
-            datas.push(null)
+            //datas.push(null)
 
             data['location'] = locations[i].location
             data['key'] = locations[i].key
@@ -27,7 +27,7 @@ exports.go = function (req, res) {
             data['indoor'] = await dbo.collection(locations[i].key).find({ inBuilding: true }).toArray()
             data['outdoor'] = await dbo.collection(locations[i].key).find({ inBuilding: false }).toArray()
             console.log(data)
-            datas[i]=data
+            //datas[i]=data
         }
         res.end(JSON.stringify(datas))
         //res.end(JSON.stringify(locations))
