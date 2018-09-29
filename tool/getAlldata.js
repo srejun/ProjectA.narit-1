@@ -5,7 +5,7 @@ exports.go = function (req, res) {
         if (err) throw err;
         var dbo = db.db("DataSensor")
         var locations
-        var datas = []
+        var datas = {}
 
         console.log(req.body.location)
         if (req.body.location === undefined) {
@@ -17,13 +17,13 @@ exports.go = function (req, res) {
         console.log(locations)
 
         for (var i = 0; i < locations.length; i++) {
-            datas.push({})
-            datas[i]['location'] = locations[i].location
-            datas[i]['key'] = locations[i].key
-            if (locations[i].outdoor === undefined) datas[i]['flag'] = 'secondary'
-            else datas[i]['flag'] = locations[i].outdoor.flag
-            datas[i]['indoor'] = await dbo.collection(locations[i].key).find({ inBuilding: true }).toArray()
-            datas[i]['outdoor'] = await dbo.collection(locations[i].key).find({ inBuilding: false }).toArray()
+            //datas.push({})
+            datas['location'] = locations[i].location
+            datas['key'] = locations[i].key
+            if (locations[i].outdoor === undefined) datas['flag'] = 'secondary'
+            else datas['flag'] = locations[i].outdoor.flag
+            datas['indoor'] = await dbo.collection(locations[i].key).find({ inBuilding: true }).toArray()
+            datas['outdoor'] = await dbo.collection(locations[i].key).find({ inBuilding: false }).toArray()
         }
         res.end(JSON.stringify(datas))
         //res.end(JSON.stringify(locations))
