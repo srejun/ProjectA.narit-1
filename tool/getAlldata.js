@@ -18,9 +18,10 @@ exports.go = function (req, res) {
         var datas = new Array(locations.length);
 
         for (var i = 0; i < locations.length; i++) {
+            datas[i] = {}
             datas[i]['location'] = locations[i].location
             datas[i]['key'] = locations[i].key
-            if(locations[i].outdoor===undefined) datas[i]['flag'] = 'secondary'
+            if (locations[i].outdoor === undefined) datas[i]['flag'] = 'secondary'
             else datas[i]['flag'] = locations[i].outdoor.flag
             datas[i]['indoor'] = await dbo.collection(locations[i].key).find({ inBuilding: true }).toArray()
             datas[i]['outdoor'] = await dbo.collection(locations[i].key).find({ inBuilding: false }).toArray()
