@@ -5,7 +5,6 @@ exports.go = function (req, res) {
         if (err) throw err;
         var dbo = db.db("DataSensor")
         var locations
-        var datas = []
 
         console.log(req.body.location)
         if (req.body.location === undefined) {
@@ -16,9 +15,10 @@ exports.go = function (req, res) {
         }
         console.log(locations)
 
+        var datas = new Array(locations.length);
+
         for (var i = 0; i < locations.length; i++) {
             var data = {}
-            datas.push(null)
 
             data['location'] = locations[i].location
             data['key'] = locations[i].key
