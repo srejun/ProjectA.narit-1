@@ -25,8 +25,7 @@ exports.go = function (req, res) {
             datas[i]['indoor'] = await dbo.collection(locations[i].key).find({ inBuilding: true }).toArray()
             datas[i]['outdoor'] = await dbo.collection(locations[i].key).find({ inBuilding: false }).toArray()
         }
-        //res.end('test')
-        //res.end(JSON.stringify(datas))
+        res.end(JSON.stringify(datas))
         res.end(JSON.stringify(locations))
         db.close()
     })
