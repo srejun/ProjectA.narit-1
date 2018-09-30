@@ -90,8 +90,8 @@ app.post('/api/examInput', examInput.go)
 var test = require('./tool/test')
 app.post('/api/test', test.go) //sensor input update data
 
-var getAlldata = require('./tool/getAlldata')
-app.post('/api/getAlldata', getAlldata.go)
+var getFlags = require('./tool/getFlags')
+app.post('/api/getFlags', getFlags.go)
 
 var setTrain = require('./tool/setTrain')
 app.post('/api/setTrain', setTrain.go)
