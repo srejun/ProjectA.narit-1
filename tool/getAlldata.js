@@ -6,7 +6,6 @@ exports.go = function (req, res) {
         var dbo = db.db("DataSensor")
         var locations
         var datas = []
-        var test = {}
 
         console.log(req.body.location)
         if (req.body.location === undefined) {
@@ -27,8 +26,8 @@ exports.go = function (req, res) {
             datas[i]['outdoor'] = await dbo.collection(locations[i].key).find({ inBuilding: false }).toArray()
         }
         //res.end('test')
-        res.end(JSON.stringify({ result: datas }))
-        //res.end(JSON.stringify(locations))
+        //res.end(JSON.stringify(datas))
+        res.end(JSON.stringify(locations))
         db.close()
     })
 }
