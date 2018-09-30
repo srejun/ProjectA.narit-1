@@ -9,15 +9,7 @@ exports.go = function (req, res) {
         var test = {}
 
         console.log(req.body.location)
-        locations = await dbo.collection("location").find({ location: req.body.location, status: true }).toArray()
-        test['location'] = locations[0].location
-        test['key'] = locations[0].key
-        if (locations[0].outdoor === undefined) test['flag'] = 'secondary'
-        else test['flag'] = locations[0].outdoor.flag
-        test['indoor'] = await dbo.collection(locations[0].key).find({ inBuilding: true }).toArray()
-        test['outdoor'] = await dbo.collection(locations[0].key).find({ inBuilding: false }).toArray()
-        res.end(JSON.stringify(test))
-        /* if (req.body.location === undefined) {
+        if (req.body.location === undefined) {
             locations = await dbo.collection("location").find({ status: true }).toArray()
         }
         else {
@@ -37,6 +29,6 @@ exports.go = function (req, res) {
         //res.end('test')
         res.end(JSON.stringify({ result: datas }))
         //res.end(JSON.stringify(locations))
-        db.close() */
+        db.close()
     })
 }
