@@ -13,7 +13,6 @@ exports.go = function (req, res) {
             var new_obj = {}
 
             new_obj.location = obj.location
-            new_obj.key = obj.key
 
             if (obj.outdoor === undefined) {
                 new_obj.time = null
