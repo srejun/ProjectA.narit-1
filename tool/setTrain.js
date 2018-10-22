@@ -14,10 +14,6 @@ exports.go = function (req, res) {
             || req.body.timestamp === undefined
             || req.body.flag === undefined
             || req.body.time === undefined
-            || req.body.temperature === undefined
-            || req.body.humidity === undefined
-            || req.body.uv === undefined
-            || req.body.wind === undefined
             || req.body.detail === undefined) {
             value.err = 'input failed'
             console.log('input failed')
@@ -30,10 +26,6 @@ exports.go = function (req, res) {
             new_data.timestamp = req.body.timestamp
             new_data.flag = req.body.flag
             new_data.time = req.body.time
-            new_data.temperature = req.body.temperature
-            new_data.humidity = req.body.humidity
-            new_data.uv = req.body.uv
-            new_data.wind = req.body.wind
             new_data.detail = req.body.detail
 
             if (find.length > 0) {
