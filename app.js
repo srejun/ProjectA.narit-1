@@ -9,7 +9,7 @@ app.use(validator())
 app.use(cookieParser())
 app.use(bodyParser.json())
 app.use(cors({
-  origin:['http://pc.devinice.com:1112'],
+  origin:['http://pc.devinice.com:1112','http://localhost:8080','http://103.76.181.106:8080'],
   //origin:['http://localhost:8080'],
   methods:['GET','POST'],
   credentials: true ,// enable set cookie
@@ -17,18 +17,25 @@ app.use(cors({
 app.use(bodyParser.urlencoded({
   extended: false
 }))
- const clientSessions = require("client-sessions");
-app.use(clientSessions({
-  secret: '0GBlJZ9EKBt2Zbi2flRPvztczCewBxXK' // set this to a long random string!
-})); 
-app.use(session({
+//  const clientSessions = require("client-sessions");
+// app.use(clientSessions({
+//   secret: '0GBlJZ9EKBt2Zbi2flRPvztczCewBxXK' // set this to a long random string!
+// })); 
+app.use(/* session({
   secret: 'keyboard cat555',
   cookieName: 'mySession',
   resave:false,
   saveUninitialized:true
 
 
-}))
+}) */
+session({
+  secret: 'keyboard cat',
+  cookie: { },
+  resave: true,
+  saveUninitialized: true
+})
+)
 
 /////////////////////////////////////////////////////////////////////
 
@@ -96,6 +103,8 @@ app.post('/api/getFlags', getFlags.go)
 var setTrain = require('./tool/setTrain')
 app.post('/api/setTrain', setTrain.go)
 
+var getTrain = require('./tool/getTrain')
+app.post('/api/getTrain', getTrain.go)
 ///////////////////////////////////////////////////////////////////////////////
 
 var server = app.listen(8081, function () {

@@ -1,0 +1,8 @@
+{
+  "apps" : [{
+    "name"        : "Web0_back",
+    "script"      : "./app.js",
+    "watch"       : true,
+    "exec_mode"        : "fork"
+  }]
+}

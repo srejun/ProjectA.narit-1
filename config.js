@@ -1,4 +1,4 @@
 var config = {}
 
-config.url = "mongodb://192.168.1.37:27017/"
+config.url = "mongodb://127.0.0.1:27017/"
 module.exports = config
